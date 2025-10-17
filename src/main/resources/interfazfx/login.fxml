@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- ╔════════════════════════════════════════════════════╗ -->
+<!-- ║        Interfaz visual para autenticación          ║ -->
+<!-- ╚════════════════════════════════════════════════════╝ -->
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="interfazfx.ControladorLogin"
+           stylesheets="@estilos.css">
+
+    <VBox spacing="20" alignment="CENTER" styleClass="tarjeta-login">
+        <Label text="🔐 Bienvenido/a" styleClass="titulo"/>
+        <Label text="Acceso al sistema de matrícula" styleClass="subtitulo"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="👤" styleClass="icono"/>
+            <TextField fx:id="campoIdentificacion" promptText="Identificación personal" styleClass="campo"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="🔑" styleClass="icono"/>
+            <PasswordField fx:id="campoContrasena" promptText="Contraseña" styleClass="campo"/>
+        </HBox>
+
+        <Button text="Iniciar sesión" onAction="#autenticarUsuario" styleClass="boton"/>
+        <Label fx:id="mensajeResultado" wrapText="true" styleClass="mensaje"/>
+    </VBox>
+</StackPane>
