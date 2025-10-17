@@ -140,6 +140,17 @@ public abstract class Usuario {
         return identificacionPersonal;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+    public String getTelefono() {
+        return numeroTelefono;
+    }
+
+    public String getDireccionFisica() {
+        return direccionFisica;
+    }
+
     public String getCorreoElectronico() {
         return correoElectronico;
     }

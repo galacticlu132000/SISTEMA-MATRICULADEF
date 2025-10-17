@@ -12,6 +12,6 @@ module com.karlalucia.sistemamatricula {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens com.karlalucia.sistemamatricula to javafx.fxml;
-    exports com.karlalucia.sistemamatricula;
+
+    opens control to javafx.fxml, javafx.graphics;
 }

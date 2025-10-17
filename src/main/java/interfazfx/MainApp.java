@@ -5,24 +5,45 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
+import control.GestorEstudiantes;
 
 /**
  * ╔════════════════════════════════════════════════════╗
  * ║        Clase principal que lanza la interfaz       ║
+ * ║        y permite cambiar entre escenas             ║
  * ╚════════════════════════════════════════════════════╝
  */
 public class MainApp extends Application {
 
+    private static Stage primaryStage;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/interfazfx/login.fxml"));
-        Scene scene = new Scene(root, 420, 420);
-        stage.setScene(scene);
-        stage.setTitle("Autenticación de Usuario");
-        stage.show();
+        primaryStage = stage;
+        cambiarEscena("login.fxml", 500, 400);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void cambiarEscena(String fxml, int ancho, int alto) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/interfazfx/" + fxml));
+            Parent root = loader.load();
+            primaryStage.setScene(new Scene(root, ancho, alto));
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cambiarEscenaAdministrador(String fxml, int ancho, int alto, GestorEstudiantes gestor) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/interfazfx/" + fxml));
+            Parent root = loader.load();
+            MenuAdministradorControlador controlador = loader.getController();
+            controlador.setGestor(gestor);
+            primaryStage.setScene(new Scene(root, ancho, alto));
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

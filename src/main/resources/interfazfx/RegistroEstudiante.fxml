@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ╔════════════════════════════════════════════════════╗
+     ║   Interfaz de registro de estudiante (JavaFX)     ║
+     ╚════════════════════════════════════════════════════╝ -->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane fx:controller="interfazfx.RegistroEstudianteControlador"
+          xmlns:fx="http://javafx.com/fxml"
+          alignment="CENTER"
+          hgap="10" vgap="10"
+          stylesheets="@estilos/registro.css"
+          padding="20">
+
+    <!-- ╔════════════════════════════════════════════════════╗
+         ║                Título principal                   ║
+         ╚════════════════════════════════════════════════════╝ -->
+    <Label text="📝 Registro de Estudiante"
+           styleClass="titulo"
+           GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+
+    <!-- Campos de entrada -->
+    <Label text="Nombre:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoNombre" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Primer Apellido:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoApellido1" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Segundo Apellido:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoApellido2" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Identificación:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoID" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Teléfono:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoTelefono" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Correo electrónico:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoCorreo" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Label text="Dirección física:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoDireccion" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+    <Label text="Organización laboral:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoOrganizacion" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+    <Label text="Temas de interés (coma):" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoTemas" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+    <Label text="Contraseña:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="campoContrasena" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+    <!-- Botón de registro -->
+    <Button text="Registrar Estudiante"
+            onAction="#registrarEstudiante"
+            styleClass="boton"
+            GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+</GridPane>

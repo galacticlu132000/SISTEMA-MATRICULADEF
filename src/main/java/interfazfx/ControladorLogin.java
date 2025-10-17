@@ -1,58 +1,86 @@
 package interfazfx;
 
-import clases.Usuario;
+import clases.Estudiante;
+import control.GestorEstudiantes;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * ╔════════════════════════════════════════════════════╗
- * ║   Controlador para la pantalla de inicio de sesión ║
- * ║   Valida credenciales contra un usuario de prueba  ║
- * ╚════════════════════════════════════════════════════╝
- */
 public class ControladorLogin {
 
     @FXML private TextField campoIdentificacion;
     @FXML private PasswordField campoContrasena;
+    @FXML private ComboBox<String> comboTipoUsuario;
     @FXML private Label mensajeResultado;
 
-    private final Usuario usuarioPrueba = new Usuario(
-            "Lucía",
-            "González",
-            "Ramírez",
-            "lucia123456",
-            "88889999",
-            "lucia@email.com",
-            "San José, Costa Rica",
-            "ClaveSegura123!"
-    ) {};
+    private static final String ID_ADMIN = "admin";
+    private static final String PASS_ADMIN = "Admin123!";
+    private static final GestorEstudiantes gestor = new GestorEstudiantes();
 
+    public static GestorEstudiantes getGestor() {
+        return gestor;
+    }
 
+    @FXML
+    private void initialize() {
+        comboTipoUsuario.getItems().addAll("Administrador", "Estudiante");
+        comboTipoUsuario.setValue("Estudiante");
+
+        try {
+            Estudiante estudiantePrueba = new Estudiante(
+                    "Lucía", "González", "Ramírez", "lucia12345",
+                    "88889999", "lucia@email.com", "San José",
+                    "ClaveSegura123!", "Universidad de Costa Rica",
+                    new ArrayList<>(List.of("Java avanzado", "Diseño de interfaces"))
+            );
+            gestor.registrarEstudiante(estudiantePrueba);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void autenticarUsuario() {
-        String id = campoIdentificacion.getText().trim();
-        String clave = campoContrasena.getText().trim();
+        try {
+            String tipo = comboTipoUsuario.getValue();
+            String id = campoIdentificacion.getText().trim();
+            String clave = campoContrasena.getText().trim();
+            String mensaje;
 
-        // Obtener mensaje específico desde Usuario
-        String mensaje = usuarioPrueba.verificarCredenciales(id, clave);
-        mensajeResultado.setText(mensaje);
+            if (tipo.equals("Administrador")) {
+                if (id.equals(ID_ADMIN) && clave.equals(PASS_ADMIN)) {
+                    mensaje = "✅ Bienvenido, administrador.";
+                    MainApp.cambiarEscenaAdministrador("MenuAdministrador.fxml", 800, 600, gestor);
+                } else {
+                    mensaje = "❌ Credenciales de administrador incorrectas.";
+                }
+            } else {
+                Estudiante estudiante = gestor.consultarEstudiante(id);
+                if (estudiante != null && estudiante.verificarCredenciales(id, clave).contains("exitosa")) {
+                    MenuEstudianteControlador.setEstudianteActivo(estudiante);
+                    mensaje = "✅ Bienvenido, " + estudiante.getNombre();
+                    MainApp.cambiarEscena("MenuEstudiante.fxml", 800, 600);
+                } else {
+                    mensaje = "❌ Credenciales de estudiante incorrectas.";
+                }
+            }
 
-        // Estilo según el tipo de mensaje
-        if (mensaje.contains("exitosa")) {
-            mensajeResultado.setStyle("-fx-text-fill: #27ae60;"); // verde
-        } else if (mensaje.contains("Contraseña")) {
-            mensajeResultado.setStyle("-fx-text-fill: #e74c3c;"); // rojo
-        } else {
-            mensajeResultado.setStyle("-fx-text-fill: #e67e22;"); // naranja
+            mostrarMensaje(mensaje);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mensajeResultado.setText("❌ Error interno: " + e.getMessage());
         }
+    }
 
-        // Animación de aparición
+    private void mostrarMensaje(String mensaje) {
+        mensajeResultado.setText(mensaje);
+        mensajeResultado.setStyle(mensaje.contains("✅") ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e74c3c;");
         FadeTransition animacion = new FadeTransition(Duration.millis(500), mensajeResultado);
         animacion.setFromValue(0);
         animacion.setToValue(1);
         animacion.play();
-    }}
+    }
+}
