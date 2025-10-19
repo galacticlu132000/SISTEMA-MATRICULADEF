@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
-import control.GestorEstudiantes;
 
 /**
  * ╔════════════════════════════════════════════════════╗
@@ -20,29 +19,29 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
-        cambiarEscena("login.fxml", 500, 400);
+        cambiarEscena("/interfazfx/registrousuarios/login.fxml", 500, 400);
     }
 
-    public static void cambiarEscena(String fxml, int ancho, int alto) {
+    public static void cambiarEscena(String rutaFXML, int ancho, int alto) {
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/interfazfx/" + fxml));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(rutaFXML));
             Parent root = loader.load();
             primaryStage.setScene(new Scene(root, ancho, alto));
             primaryStage.show();
         } catch (Exception e) {
+            System.err.println("❌ No se pudo cargar la escena: " + rutaFXML);
             e.printStackTrace();
         }
     }
 
-    public static void cambiarEscenaAdministrador(String fxml, int ancho, int alto, GestorEstudiantes gestor) {
+    public static void cambiarEscenaAdministrador(String rutaFXML, int ancho, int alto) {
         try {
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/interfazfx/" + fxml));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(rutaFXML));
             Parent root = loader.load();
-            MenuAdministradorControlador controlador = loader.getController();
-            controlador.setGestor(gestor);
             primaryStage.setScene(new Scene(root, ancho, alto));
             primaryStage.show();
         } catch (Exception e) {
+            System.err.println("❌ No se pudo cargar la escena de administrador: " + rutaFXML);
             e.printStackTrace();
         }
     }

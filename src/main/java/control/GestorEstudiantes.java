@@ -1,11 +1,6 @@
 package control;
 
-// ╔════════════════════════════════════════════════════╗
-// ║        Clase controladora para gestión CRUD         ║
-// ║        de estudiantes registrados en el sistema     ║
-// ╚════════════════════════════════════════════════════╝
 import clases.Estudiante;
-
 import java.util.*;
 
 /**
@@ -16,112 +11,79 @@ import java.util.*;
  */
 public class GestorEstudiantes {
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║                 Atributos privados                 ║
-    // ╚════════════════════════════════════════════════════╝
-    private Map<String, Estudiante> estudiantes = new HashMap<>();
+    private static final GestorEstudiantes instancia = new GestorEstudiantes(); // ✅ Singleton
+    private List<Estudiante> estudiantes = new ArrayList<>();
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║              Registro de nuevo estudiante          ║
-    // ╚════════════════════════════════════════════════════╝
+    private GestorEstudiantes() {} // ✅ Constructor privado
+
+    public static GestorEstudiantes getInstancia() { // ✅ Acceso global
+        return instancia;
+    }
+
     public boolean registrarEstudiante(Estudiante nuevo) {
         String id = nuevo.getIdentificacionPersonal();
-        if (estudiantes.containsKey(id)) {
+        if (buscarPorID(id) != null) {
             System.out.println("⚠️ Ya existe un estudiante con esa identificación.");
             return false;
         }
-        estudiantes.put(id, nuevo);
+        estudiantes.add(nuevo);
         System.out.println("✅ Estudiante registrado exitosamente: " + nuevo);
         return true;
     }
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║              Consulta detallada por ID             ║
-    // ╚════════════════════════════════════════════════════╝
-    public void mostrarInformacionEstudiante(String id) {
-        Estudiante estudiante = estudiantes.get(id);
-        if (estudiante == null) {
-            System.out.println("❌ No se encontró el estudiante con ID: " + id);
-            return;
-        }
-
-        System.out.println("📋 Información del estudiante:");
-        System.out.println("Nombre completo: " + estudiante.getNombreCompleto());
-        System.out.println("Identificación: " + estudiante.getIdentificacionPersonal());
-        System.out.println("Teléfono: " + estudiante.getTelefono());
-        System.out.println("Correo: " + estudiante.getCorreoElectronico());
-        System.out.println("Dirección: " + estudiante.getDireccionFisica());
-        System.out.println("Organización: " + estudiante.getOrganizacionLaboral());
-        System.out.println("Temas de interés: " + String.join(", ", estudiante.getTemasInteres()));
-        System.out.println("Fecha de registro: " + estudiante.getFechaRegistro());
-    }
-
-    // ╔════════════════════════════════════════════════════╗
-    // ║              Modificación completa de datos        ║
-    // ╚════════════════════════════════════════════════════╝
-    public boolean modificarEstudianteCompleto(String id,
-                                               String nuevoNombre,
-                                               String nuevoApellido1,
-                                               String nuevoApellido2,
-                                               String nuevoTelefono,
-                                               String nuevoCorreo,
-                                               String nuevaDireccion,
-                                               String nuevaOrganizacion,
-                                               ArrayList<String> nuevosTemas,
-                                               String nuevaContrasenaPlano) {
-        Estudiante actual = estudiantes.get(id);
-        if (actual == null) {
-            System.out.println("❌ No se encontró el estudiante con ID: " + id);
-            return false;
-        }
-
-        try {
-            Estudiante actualizado = new Estudiante(
-                    nuevoNombre,
-                    nuevoApellido1,
-                    nuevoApellido2,
-                    id,
-                    nuevoTelefono,
-                    nuevoCorreo,
-                    nuevaDireccion,
-                    nuevaContrasenaPlano,
-                    nuevaOrganizacion,
-                    nuevosTemas
-            );
-
-            estudiantes.put(id, actualizado);
-            System.out.println("🔄 Estudiante actualizado exitosamente.");
-            return true;
-
-        } catch (Exception e) {
-            System.out.println("❌ Error al actualizar: " + e.getMessage());
-            return false;
-        }
-    }
-
-    // ╔════════════════════════════════════════════════════╗
-    // ║              Eliminación de estudiante             ║
-    // ╚════════════════════════════════════════════════════╝
     public boolean eliminarEstudiante(String id) {
-        if (!estudiantes.containsKey(id)) {
-            System.out.println("❌ No se encontró el estudiante.");
-            return false;
+        Iterator<Estudiante> iter = estudiantes.iterator();
+        while (iter.hasNext()) {
+            Estudiante e = iter.next();
+            if (e.getIdentificacionPersonal().equals(id)) {
+                iter.remove();
+                System.out.println("🗑️ Estudiante eliminado: " + e);
+                return true;
+            }
         }
-        Estudiante eliminado = estudiantes.remove(id);
-        System.out.println("🗑️ Estudiante eliminado: " + eliminado);
-        return true;
+        System.out.println("❌ No se encontró el estudiante.");
+        return false;
     }
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║              Listado de todos los estudiantes      ║
-    // ╚════════════════════════════════════════════════════╝
     public List<Estudiante> listarEstudiantes() {
-        return new ArrayList<>(estudiantes.values());
+        return new ArrayList<>(estudiantes);
     }
 
-// ╔════════════════════════════════════════════════════╗
-// ║        Consulta directa del estudiante por ID      ║
-// ╚════════════════════════════════════════════════════╝
-public Estudiante consultarEstudiante(String id) {
-    return estudiantes.get(id);
-}}
+    public Estudiante consultarEstudiante(String id) {
+        return buscarPorID(id);
+    }
+
+    public boolean actualizarEstudiante(Estudiante actualizado) {
+        String id = actualizado.getIdentificacionPersonal();
+        for (int i = 0; i < estudiantes.size(); i++) {
+            if (estudiantes.get(i).getIdentificacionPersonal().equals(id)) {
+                estudiantes.set(i, actualizado);
+                System.out.println("🔄 Estudiante actualizado correctamente.");
+                return true;
+            }
+        }
+        System.out.println("❌ No se encontró el estudiante con ID: " + id);
+        return false;
+    }
+
+    private Estudiante buscarPorID(String id) {
+        for (Estudiante e : estudiantes) {
+            if (e.getIdentificacionPersonal().equals(id)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public boolean existeID(String id) {
+        return estudiantes.stream().anyMatch(e -> e.getIdentificacionPersonal().equals(id));
+    }
+
+    public boolean existeCorreo(String correo) {
+        return estudiantes.stream().anyMatch(e -> e.getCorreoElectronico().equalsIgnoreCase(correo));
+    }
+}
+
+
+
+

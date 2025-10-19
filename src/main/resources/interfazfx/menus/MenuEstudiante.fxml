@@ -6,7 +6,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="interfazfx.MenuEstudianteControlador"
-            stylesheets="@estilos/estudiante.css">
+            stylesheets="@../estilos/estudiante.css">
 
     <top>
         <Label fx:id="tituloBienvenida"

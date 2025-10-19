@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="interfazfx.MenuAdministradorControlador"
-            stylesheets="@estilos/administrador.css">
+            stylesheets="@../estilos/administrador.css">
 
     <top>
         <Label text="👨‍💼 Panel del Administrador"

@@ -18,27 +18,26 @@ public class ControladorLogin {
 
     private static final String ID_ADMIN = "admin";
     private static final String PASS_ADMIN = "Admin123!";
-    private static final GestorEstudiantes gestor = new GestorEstudiantes();
-
-    public static GestorEstudiantes getGestor() {
-        return gestor;
-    }
+    private final GestorEstudiantes gestor = GestorEstudiantes.getInstancia();
 
     @FXML
     private void initialize() {
         comboTipoUsuario.getItems().addAll("Administrador", "Estudiante");
         comboTipoUsuario.setValue("Estudiante");
 
-        try {
-            Estudiante estudiantePrueba = new Estudiante(
-                    "Lucía", "González", "Ramírez", "lucia12345",
-                    "88889999", "lucia@email.com", "San José",
-                    "ClaveSegura123!", "Universidad de Costa Rica",
-                    new ArrayList<>(List.of("Java avanzado", "Diseño de interfaces"))
-            );
-            gestor.registrarEstudiante(estudiantePrueba);
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Registrar estudiante de prueba si no existe
+        if (!gestor.existeID("lucia12345")) {
+            try {
+                Estudiante estudiantePrueba = new Estudiante(
+                        "Lucía", "González", "Ramírez", "lucia12345",
+                        "88889999", "lucia@email.com", "San José",
+                        "ClaveSegura123!", "Universidad de Costa Rica",
+                        new ArrayList<>(List.of("Java avanzado", "Diseño de interfaces"))
+                );
+                gestor.registrarEstudiante(estudiantePrueba);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -53,7 +52,7 @@ public class ControladorLogin {
             if (tipo.equals("Administrador")) {
                 if (id.equals(ID_ADMIN) && clave.equals(PASS_ADMIN)) {
                     mensaje = "✅ Bienvenido, administrador.";
-                    MainApp.cambiarEscenaAdministrador("MenuAdministrador.fxml", 800, 600, gestor);
+                    MainApp.cambiarEscenaAdministrador("/interfazfx/menus/MenuAdministrador.fxml", 800, 600);
                 } else {
                     mensaje = "❌ Credenciales de administrador incorrectas.";
                 }
@@ -62,7 +61,7 @@ public class ControladorLogin {
                 if (estudiante != null && estudiante.verificarCredenciales(id, clave).contains("exitosa")) {
                     MenuEstudianteControlador.setEstudianteActivo(estudiante);
                     mensaje = "✅ Bienvenido, " + estudiante.getNombre();
-                    MainApp.cambiarEscena("MenuEstudiante.fxml", 800, 600);
+                    MainApp.cambiarEscena("/interfazfx/menus/MenuEstudiante.fxml", 800, 600);
                 } else {
                     mensaje = "❌ Credenciales de estudiante incorrectas.";
                 }

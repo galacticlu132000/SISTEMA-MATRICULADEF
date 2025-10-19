@@ -58,6 +58,8 @@ public class Estudiante extends Usuario {
         }
     }
 
+
+
     // ╔════════════════════════════════════════════════════╗
     // ║                  Getters públicos                  ║
     // ╚════════════════════════════════════════════════════╝
@@ -69,6 +71,28 @@ public class Estudiante extends Usuario {
     public ArrayList<String> getTemasInteres() {
         return temasInteres;
     }
+    //╔════════════════════════════════════════════════════╗
+// ║                  Setters públicos                  ║
+// ╚════════════════════════════════════════════════════╝
+
+    public void setOrganizacionLaboral(String organizacionLaboral) {
+        if (organizacionLaboral == null || organizacionLaboral.length() > 40)
+            throw new IllegalArgumentException("La organización no puede exceder los 40 caracteres.");
+        this.organizacionLaboral = organizacionLaboral;
+    }
+
+    public void setTemasInteres(ArrayList<String> temasInteres) {
+        if (temasInteres == null || temasInteres.isEmpty())
+            throw new IllegalArgumentException("Debe especificar al menos un tema de interés.");
+
+        for (String tema : temasInteres) {
+            if (tema.length() < 5 || tema.length() > 30)
+                throw new IllegalArgumentException("Cada tema de interés debe tener entre 5 y 30 caracteres.");
+        }
+
+        this.temasInteres = temasInteres;
+    }
+
 
     // ╔════════════════════════════════════════════════════╗
     // ║            Representación en texto                 ║

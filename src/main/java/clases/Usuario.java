@@ -162,6 +162,33 @@ public abstract class Usuario {
     public String getNombreCompleto() {
         return nombre + " " + primerApellido + " " + segundoApellido;
     }
+// ╔════════════════════════════════════════════════════╗
+// ║                  Setters públicos                  ║
+// ╚════════════════════════════════════════════════════╝
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setPrimerApellido(String primerApellido) {
+        this.primerApellido = primerApellido;
+    }
+
+    public void setSegundoApellido(String segundoApellido) {
+        this.segundoApellido = segundoApellido;
+    }
+
+    public void setNumeroTelefono(String numeroTelefono) {
+        this.numeroTelefono = numeroTelefono;
+    }
+
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
+
+    public void setDireccionFisica(String direccionFisica) {
+        this.direccionFisica = direccionFisica;
+    }
 
     // ╔════════════════════════════════════════════════════╗
     // ║            Representación en texto                 ║

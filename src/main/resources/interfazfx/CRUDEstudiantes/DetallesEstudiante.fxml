@@ -6,7 +6,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="interfazfx.DetallesEstudianteControlador"
-            stylesheets="@estilos/detalles.css"
+            stylesheets="@../estilos/detalles.css"
             prefWidth="450" prefHeight="400">
 
     <top>
