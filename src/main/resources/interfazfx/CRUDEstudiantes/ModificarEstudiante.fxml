@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="interfazfx.ModificarEstudianteControlador"
+            stylesheets="@../estilos/modificacion.css">
+    <center>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtID" editable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Nombre:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtNombre" promptText="Ej. Lucía" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Primer apellido:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtApellido1" promptText="Ej. González" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Segundo apellido:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtApellido2" promptText="Ej. Ramírez" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Correo electrónico:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtCorreo" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Teléfono:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtTelefono" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="Dirección física:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtDireccion" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="Organización laboral:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtOrganizacion" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <Label text="Temas de interés (separados por coma):" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtTemas" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+            <HBox spacing="10" alignment="center" GridPane.rowIndex="9" GridPane.columnIndex="1">
+                <Button fx:id="btnGuardar" text="Guardar" onAction="#guardarCambios"/>
+                <Button text="Cancelar" onAction="#cerrarVentana"/>
+            </HBox>
+        </GridPane>
+    </center>
+</BorderPane>

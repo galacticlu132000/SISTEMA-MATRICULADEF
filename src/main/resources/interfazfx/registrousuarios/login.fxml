@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane fx:controller="interfazfx.ControladorLogin"
+          xmlns:fx="http://javafx.com/fxml"
+          alignment="CENTER"
+          hgap="10" vgap="10"
+          styleClass="tarjeta-login"
+          stylesheets="@../estilos/login.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="🔐 Iniciar Sesión"
+           styleClass="titulo"
+           GridPane.columnSpan="2"
+           GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+
+    <Label text="Tipo de usuario:" styleClass="icono" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="comboTipoUsuario"
+              styleClass="campo"
+              GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Identificación:" styleClass="icono" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="campoIdentificacion"
+               styleClass="campo"
+               GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Contraseña:" styleClass="icono" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="campoContrasena"
+                   styleClass="campo"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Button text="Ingresar"
+            onAction="#autenticarUsuario"
+            styleClass="boton"
+            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label fx:id="mensajeResultado"
+           styleClass="mensaje"
+           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+</GridPane>
