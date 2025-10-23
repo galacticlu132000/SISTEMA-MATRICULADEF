@@ -150,12 +150,35 @@ public class MenuAdministradorControlador extends JFrame {
     // ╚════════════════════════════════════════════════════════════╝
     private void cambiarVista() {
         String seleccion = (String) selectorVista.getSelectedItem();
+        actualizarColoresVista(seleccion);
         if (seleccion.equals("👩‍🎓 Estudiantes")) {
             cargarEstudiantes();
         } else {
             cargarProfesores();
         }
     }
+
+    private void actualizarColoresVista(String vista) {
+        Color colorFondo;
+        switch (vista) {
+            case "👩‍🎓 Estudiantes":
+                colorFondo = new Color(240, 255, 250); // Verde menta suave
+                break;
+            case "👨‍🏫 Profesores":
+                colorFondo = new Color(255, 248, 220); // Amarillo claro
+                break;
+            default:
+                colorFondo = new Color(240, 240, 255); // Color por defecto
+        }
+
+        getContentPane().setBackground(colorFondo);
+        for (Component comp : getContentPane().getComponents()) {
+            if (comp instanceof JPanel) {
+                comp.setBackground(colorFondo);
+            }
+        }
+    }
+
 
     // ╔════════════════════════════════════════════════════════════╗
     // ║                  📋 CARGAR ESTUDIANTES                    ║
