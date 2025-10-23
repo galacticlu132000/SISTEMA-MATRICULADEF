@@ -1,5 +1,7 @@
 package gui.estudiante;
 import usuarios.Estudiante;
+import utilidades.correo.GestorCorreos;
+import utilidades.correo.RegistroCorreo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,6 +44,33 @@ public class MenuEstudianteControlador extends JFrame {
     private void inicializarComponentes() {
         JPanel panel = new JPanel(new GridLayout(8, 2, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+        JButton botonVerCorreos = new JButton("📬 Ver correos recibidos");
+        botonVerCorreos.setBackground(new Color(220, 235, 255));
+        botonVerCorreos.setForeground(new Color(40, 70, 130));
+        botonVerCorreos.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        botonVerCorreos.setFocusPainted(false);
+        botonVerCorreos.addActionListener(e -> {
+            RegistroCorreo registro = GestorCorreos.obtenerRegistro(estudianteActivo.getCorreoElectronico());
+            java.util.List<String> historial = registro.obtenerHistorial();
+
+            JTextArea area = new JTextArea();
+            area.setEditable(false);
+            area.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            area.setBackground(new Color(255, 255, 255));
+            area.setForeground(new Color(50, 50, 50));
+
+            for (String entrada : historial) {
+                area.append("═══════════════════════════════════════\n");
+                area.append(entrada + "\n");
+                area.append("═══════════════════════════════════════\n\n");
+            }
+
+            JScrollPane scroll = new JScrollPane(area);
+            scroll.setPreferredSize(new Dimension(450, 300));
+
+            JOptionPane.showMessageDialog(null, scroll, "📬 Historial de correos", JOptionPane.PLAIN_MESSAGE);
+        });
+
 
         tituloBienvenida   = new JLabel();
         labelNombre        = new JLabel();
@@ -62,6 +91,11 @@ public class MenuEstudianteControlador extends JFrame {
         panel.add(new JLabel("📚 Temas de interés:")); panel.add(labelTemas);
 
         add(panel);
+        JPanel panelBoton = new JPanel();
+        panelBoton.setBackground(new Color(240, 240, 255));
+        panelBoton.add(botonVerCorreos);
+        add(panelBoton, BorderLayout.SOUTH);
+
     }
 
     // ╔════════════════════════════════════════════════════════════╗
