@@ -179,6 +179,17 @@ public abstract class Usuario {
         return nombre + " " + primerApellido + " " + segundoApellido;
     }
 
+    private String contrasenaTemporal;
+
+    public String getContrasenaTemporal() {
+        return contrasenaTemporal;
+    }
+
+    public void setContrasenaTemporal(String contrasenaTemporal) {
+        this.contrasenaTemporal = contrasenaTemporal;
+    }
+
+
     // ╔════════════════════════════════════════════════════╗
     // ║                  Setters públicos                  ║
     // ╚════════════════════════════════════════════════════╝
@@ -205,6 +216,10 @@ public abstract class Usuario {
 
     public void setDireccionFisica(String direccionFisica) {
         this.direccionFisica = direccionFisica;
+    }
+
+    public void setContrasenaEncriptada(String contrasenaEncriptada) {
+        this.contrasenaEncriptada = contrasenaEncriptada;
     }
 
     // ╔════════════════════════════════════════════════════╗

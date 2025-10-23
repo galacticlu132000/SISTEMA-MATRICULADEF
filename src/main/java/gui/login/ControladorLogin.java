@@ -6,7 +6,9 @@ import usuarios.Administrador;
 import usuarios.Profesor;
 import control.GestorEstudiantes;
 import main.Main;
+import usuarios.Usuario;
 import utilidades.correo.Correo;
+import utilidades.correo.GestorCorreos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -165,41 +167,73 @@ public class ControladorLogin extends JPanel {
             String tipo = (String) comboTipoUsuario.getSelectedItem();
             String id = campoIdentificacion.getText().trim();
             String clave = new String(campoContrasena.getPassword()).trim();
-            String mensaje;
+            String mensaje = "";
 
             if ("Administrador".equals(tipo)) {
-                if (id.equals(administrador.getIdentificacionPersonal()) && encriptar(clave).equals(administrador.getContrasenaEncriptada())) {
+                if (id.equals(administrador.getIdentificacionPersonal()) &&
+                        encriptar(clave).equals(administrador.getContrasenaEncriptada())) {
+
                     mensaje = "✅ Bienvenido, administrador.";
                     SwingUtilities.getWindowAncestor(this).dispose();
                     Main.abrirMenuAdministrador();
                 } else {
                     mensaje = "❌ Credenciales de administrador incorrectas.";
                 }
-            } else if (id.equals(estudiantePrueba.getIdentificacionPersonal()) && encriptar(clave).equals(estudiantePrueba.getContrasenaEncriptada())) {
-                Estudiante estudiante = gestor.consultarEstudiante(id);
-                if (estudiante != null && estudiante.verificarCredenciales(id, clave).contains("exitosa")) {
-                    mensaje = "✅ Bienvenido, " + estudiante.getNombre();
-                    SwingUtilities.getWindowAncestor(this).dispose();
-                    Main.abrirMenuEstudiante(estudiante);
-                } else {
-                    mensaje = "❌ Credenciales de estudiante incorrectas.";
-                }
-            }
-            else{
-                Profesor profesor = gestor2.consultarProfesor(id);
-                mensaje = "✅ Bienvenido"+  profesor.getNombre();
-                SwingUtilities.getWindowAncestor(this).dispose();
-                Main.abrirMenuProfesor(profesor);
 
+            } else if (id.equals(estudiantePrueba.getIdentificacionPersonal()) &&
+                    encriptar(clave).equals(estudiantePrueba.getContrasenaEncriptada())) {
+
+                Estudiante estudiante = gestor.consultarEstudiante(id);
+                if (estudiante != null) {
+                    String claveEncriptada = encriptar(clave);
+
+                    if (claveEncriptada.equals(estudiante.getContrasenaTemporal())) {
+                        mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
+                        SwingUtilities.getWindowAncestor(this).dispose();
+                        abrirPanelCambioContrasena(estudiante);
+                        return;
+                    }
+
+                    if (estudiante.verificarCredenciales(id, clave).contains("exitosa")) {
+                        mensaje = "✅ Bienvenido, " + estudiante.getNombre();
+                        SwingUtilities.getWindowAncestor(this).dispose();
+                        Main.abrirMenuEstudiante(estudiante);
+                    } else {
+                        mensaje = "❌ Credenciales de estudiante incorrectas.";
+                    }
+                }
+
+            } else {
+                Profesor profesor = gestor2.consultarProfesor(id);
+                if (profesor != null) {
+                    String claveEncriptada = encriptar(clave);
+
+                    if (claveEncriptada.equals(profesor.getContrasenaTemporal())) {
+                        mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
+                        SwingUtilities.getWindowAncestor(this).dispose();
+                        abrirPanelCambioContrasena(profesor);
+                        return;
+                    }
+
+                    if (profesor.verificarCredenciales(id, clave).contains("exitosa")) {
+                        mensaje = "✅ Bienvenido, " + profesor.getNombre();
+                        SwingUtilities.getWindowAncestor(this).dispose();
+                        Main.abrirMenuProfesor(profesor); // Asegúrate de tener este método
+                    } else {
+                        mensaje = "❌ Credenciales de profesor incorrectas.";
+                    }
+                } else {
+                    mensaje = "❌ Usuario no encontrado.";
+                }
             }
 
             mostrarMensaje(mensaje);
+
         } catch (Exception e) {
             e.printStackTrace();
             mostrarMensaje("❌ Error interno: " + e.getMessage());
         }
     }
-
 
 
     private void recuperarContrasena(ActionEvent e) {
@@ -221,9 +255,13 @@ public class ControladorLogin extends JPanel {
             estudiante.setContrasenaTemporal(encriptada); // método que debes agregar en Estudiante
             gestor.actualizarEstudiante(estudiante); // guarda el cambio
 
-            Correo.enviar(estudiante.getCorreoElectronico(), "Recuperación de contraseña",
+            GestorCorreos.enviarYRegistrar(
+                    estudiante.getCorreoElectronico(),
+                    "Recuperación de contraseña",
                     "Hola " + estudiante.getNombre() + ",\n\nTu contraseña temporal es:\n\n" +
-                            temporal + "\n\nÚsala una vez para ingresar y establecer una nueva contraseña.");
+                            temporal + "\n\nÚsala una vez para ingresar y establecer una nueva contraseña."
+            );
+
 
             mostrarMensaje("📩 Se ha enviado una contraseña temporal a tu correo.");
         } catch (Exception ex) {
@@ -240,6 +278,12 @@ public class ControladorLogin extends JPanel {
             sb.append(caracteres.charAt(index));
         }
         return sb.toString();
+    }
+
+
+    private void abrirPanelCambioContrasena(Usuario usuario) {
+        SwingUtilities.getWindowAncestor(this).dispose();
+        new PanelCambioContrasena(usuario).setVisible(true);
     }
 
 
