@@ -162,10 +162,10 @@ public class MenuAdministradorControlador extends JFrame {
         Color colorFondo;
         switch (vista) {
             case "👩‍🎓 Estudiantes":
-                colorFondo = new Color(240, 255, 250); // Verde menta suave
+                colorFondo = new Color(220, 90, 100); // Coral oscuro
                 break;
             case "👨‍🏫 Profesores":
-                colorFondo = new Color(255, 248, 220); // Amarillo claro
+                colorFondo = new Color(100, 200, 180); // Verde agua más profundo
                 break;
             default:
                 colorFondo = new Color(240, 240, 255); // Color por defecto
