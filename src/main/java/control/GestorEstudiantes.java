@@ -31,6 +31,7 @@ public class GestorEstudiantes {
         return true;
     }
 
+
     public boolean eliminarEstudiante(String id) {
         Iterator<Estudiante> iter = estudiantes.iterator();
         while (iter.hasNext()) {

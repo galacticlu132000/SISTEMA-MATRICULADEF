@@ -11,6 +11,7 @@ module com.karlalucia.sistemamatricula {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires com.karlalucia.sistemamatricula;
 
 
     opens control to javafx.fxml, javafx.graphics;
