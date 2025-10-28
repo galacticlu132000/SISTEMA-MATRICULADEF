@@ -2,8 +2,10 @@ package gui.admin;
 
 import usuarios.Estudiante;
 import usuarios.Profesor;
+import usuarios.Curso;
 import control.GestorEstudiantes;
 import control.GestorProfesores;
+import control.GestorCursos;
 import gui.estudiante.*;
 import gui.profesor.*;
 
@@ -28,13 +30,14 @@ public class MenuAdministradorControlador extends JFrame {
     private DefaultTableModel modeloTabla;
     private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles;
     private JComboBox<String> selectorVista;
-    private final String[] opcionesVista = {"👩‍🎓 Estudiantes", "👨‍🏫 Profesores"};
+    private final String[] opcionesVista = {"👩‍🎓 Estudiantes", "👨‍🏫 Profesores", "📚 Cursos"};
 
     // ╔════════════════════════════════════════════════════════════╗
     // ║                      GESTORES                              ║
     // ╚════════════════════════════════════════════════════════════╝
     private final GestorEstudiantes gestorEstudiantes = GestorEstudiantes.getInstancia();
     private final GestorProfesores gestorProfesores = GestorProfesores.getInstancia();
+    private final GestorCursos gestorCursos = GestorCursos.getInstancia();
 
     // ╔════════════════════════════════════════════════════════════╗
     // ║                      CONSTRUCTOR                           ║

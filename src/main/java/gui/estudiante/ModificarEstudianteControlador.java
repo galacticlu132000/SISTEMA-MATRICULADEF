@@ -121,6 +121,7 @@ public class ModificarEstudianteControlador extends JDialog {
         btnGuardar.addActionListener(e -> guardarCambios());
         btnCancelar.addActionListener(e -> dispose());
 
+
         // 🎯 Validación en tiempo real
         for (JTextField campo : new JTextField[]{
                 txtNombre, txtApellido1, txtApellido2, txtCorreo,
@@ -226,14 +227,4 @@ public class ModificarEstudianteControlador extends JDialog {
     // ╔════════════════════════════════════════════════════════════╗
     // ║                  VISUALIZACIÓN DE MENSAJES                ║
     // ╚════════════════════════════════════════════════════════════╝
-    private void mostrarAlerta(String mensaje, int tipo) {
-        JOptionPane.showMessageDialog(this, mensaje, "Resultado", tipo);
-    }
-
-    private void aplicarEstiloCampo(JComponent campo, boolean valido, String tooltip) {
-        campo.setBorder(BorderFactory.createLineBorder(valido ? new Color(0, 180, 100) : Color.RED));
-        campo.setToolTipText(valido ? null : tooltip);
-    }
-
-}
-
+    private void mostrarAlerta(String mensaje, int tipo) { JOptionPane.showMessageDialog(this, mensaje, "Resultado", tipo); } private void aplicarEstiloCampo(JComponent campo, boolean valido, String tooltip) { campo.setBorder(BorderFactory.createLineBorder(valido ? new Color(0, 180, 100) : Color.RED)); campo.setToolTipText(valido ? null : tooltip); } }

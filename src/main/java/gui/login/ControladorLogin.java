@@ -140,6 +140,8 @@ public class ControladorLogin extends JPanel {
     // ║              REGISTRO DE ESTUDIANTE DE PRUEBA             ║
     // ╚════════════════════════════════════════════════════════════╝
 
+
+
     Estudiante estudiantePrueba = new Estudiante(
                         "Lucía", "González", "Ramírez", "lucia12345",
                         "88889999", "lucia@email.com", "San José",
