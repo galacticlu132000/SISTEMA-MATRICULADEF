@@ -125,6 +125,10 @@ public class RegistroCursoControlador extends JDialog {
         }
         comboModalidad = new JComboBox<>(modalidadMap.keySet().toArray(new String[0]));
         comboTipoCurso = new JComboBox<>(tipoCursoMap.keySet().toArray(new String[0]));
+
+
+
+
     }
     // ╔════════════════════════════════════════════════════════════╗
     // ║                  VALIDACIÓN DE CAMPOS                     ║

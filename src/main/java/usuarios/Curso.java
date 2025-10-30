@@ -1,5 +1,9 @@
 package usuarios;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Curso {
     private String identificacionCurso;
     private String nombreCurso;
@@ -96,6 +100,7 @@ public class Curso {
 
     }
 
+
     public void setIdentificacionCurso( String identificacionCurso){
         this.identificacionCurso= identificacionCurso;
     }
@@ -162,6 +167,21 @@ public class Curso {
     }
     public Tipo_Curso gettipoCurso() {
         return tipo_Curso;
+    }
+
+
+
+
+    private List<GrupoCurso> grupos = new ArrayList<>();
+
+    public void agregarGrupo(LocalDate inicio, LocalDate fin) {
+        int nuevoId = grupos.size() + 1;
+        GrupoCurso nuevoGrupo = new GrupoCurso(nuevoId, inicio, fin);
+        grupos.add(nuevoGrupo);
+    }
+
+    public List<GrupoCurso> getGrupos() {
+        return grupos;
     }
 
 

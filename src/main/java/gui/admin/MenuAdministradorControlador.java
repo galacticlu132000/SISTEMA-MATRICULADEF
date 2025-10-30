@@ -5,10 +5,11 @@ import usuarios.Profesor;
 import usuarios.Curso;
 import control.GestorEstudiantes;
 import control.GestorProfesores;
+import control.GestorGruposCurso;
 import control.GestorCursos;
 import gui.estudiante.*;
 import gui.profesor.*;
-
+import gui.curso.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -37,7 +38,8 @@ public class MenuAdministradorControlador extends JFrame {
     // ╚════════════════════════════════════════════════════════════╝
     private final GestorEstudiantes gestorEstudiantes = GestorEstudiantes.getInstancia();
     private final GestorProfesores gestorProfesores = GestorProfesores.getInstancia();
-    private final GestorCursos gestorCursos = GestorCursos.getInstancia();
+    private final GestorGruposCurso gestorCursos = GestorGruposCurso.getInstancia();
+    private final GestorGruposCurso gestorGruposCurso = GestorGruposCurso.getInstancia();
 
     // ╔════════════════════════════════════════════════════════════╗
     // ║                      CONSTRUCTOR                           ║
@@ -153,161 +155,236 @@ public class MenuAdministradorControlador extends JFrame {
     // ╚════════════════════════════════════════════════════════════╝
     private void cambiarVista() {
         String seleccion = (String) selectorVista.getSelectedItem();
+        if (seleccion == null) return;
+
         actualizarColoresVista(seleccion);
+
         if (seleccion.equals("👩‍🎓 Estudiantes")) {
             cargarEstudiantes();
-        } else {
+        } else if (seleccion.equals("👨‍🏫 Profesores")) {
             cargarProfesores();
-        }
-    }
+        } else if (seleccion.equals("📚 Cursos")) {
+            cargarCursos();
+        } }
 
-    private void actualizarColoresVista(String vista) {
-        Color colorFondo;
-        switch (vista) {
-            case "👩‍🎓 Estudiantes":
-                colorFondo = new Color(220, 90, 100); // Coral oscuro
-                break;
-            case "👨‍🏫 Profesores":
-                colorFondo = new Color(100, 200, 180); // Verde agua más profundo
-                break;
-            default:
-                colorFondo = new Color(240, 240, 255); // Color por defecto
-        }
-
-        getContentPane().setBackground(colorFondo);
-        for (Component comp : getContentPane().getComponents()) {
-            if (comp instanceof JPanel) {
-                comp.setBackground(colorFondo);
+        private void actualizarColoresVista (String vista){
+            Color colorFondo;
+            switch (vista) {
+                case "👩‍🎓 Estudiantes":
+                    colorFondo = new Color(220, 90, 100); // Coral oscuro
+                    break;
+                case "👨‍🏫 Profesores":
+                    colorFondo = new Color(100, 200, 180); // Verde agua más profundo
+                    break;
+                case "\uD83D\uDCDA Cursos":
+                    colorFondo = new Color(90, 60, 150); // Morado oscuro
+                    break;
+                default:
+                    colorFondo = new Color(240, 240, 255); // Color por defecto
             }
-        }
-    }
 
-
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  📋 CARGAR ESTUDIANTES                    ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void cargarEstudiantes() {
-        modeloTabla.setRowCount(0);
-        modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Correo"});
-        for (Estudiante e : gestorEstudiantes.listarEstudiantes()) {
-            modeloTabla.addRow(new Object[]{
-                    e.getIdentificacionPersonal(),
-                    e.getNombreCompleto(),
-                    e.getCorreoElectronico()
-            });
-        }
-    }
-
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  📋 CARGAR PROFESORES                     ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void cargarProfesores() {
-        modeloTabla.setRowCount(0);
-        modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Correo"});
-        for (Profesor p : gestorProfesores.listarProfesores()) {
-            modeloTabla.addRow(new Object[]{
-                    p.getIdentificacionPersonal(),
-                    p.getNombreCompleto(),
-                    p.getCorreoElectronico()
-            });
-        }
-    }
-
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  ➕ REGISTRAR USUARIO                      ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void abrirRegistro() {
-        String seleccion = (String) selectorVista.getSelectedItem();
-        if (seleccion.equals("👩‍🎓 Estudiantes")) {
-            new RegistroEstudianteControlador(this).setVisible(true);
-            cargarEstudiantes();
-        } else {
-            new RegistroProfesorControlador(this).setVisible(true);
-            cargarProfesores();
-        }
-    }
-
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  ✏️ MODIFICAR USUARIO                     ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void abrirModificacion() {
-        int fila = tablaUsuarios.getSelectedRow();
-        if (fila != -1) {
-            String id = (String) modeloTabla.getValueAt(fila, 0);
-            String seleccion = (String) selectorVista.getSelectedItem();
-
-            if (seleccion.equals("👩‍🎓 Estudiantes")) {
-                Estudiante seleccionado = gestorEstudiantes.consultarEstudiante(id);
-                new ModificarEstudianteControlador(this, seleccionado).setVisible(true);
-                cargarEstudiantes();
-            } else {
-                Profesor seleccionado = gestorProfesores.consultarProfesor(id);
-                new ModificarProfesorControlador(this, seleccionado).setVisible(true);
-                cargarProfesores();
-            }
-        } else {
-            mostrarAdvertencia("⚠️ Selecciona un usuario para modificar.");
-        }
-    }
-
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  🗑️ ELIMINAR USUARIO                      ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void eliminarUsuario() {
-        int fila = tablaUsuarios.getSelectedRow();
-        if (fila != -1) {
-            String id = (String) modeloTabla.getValueAt(fila, 0);
-            String seleccion = (String) selectorVista.getSelectedItem();
-
-            int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Estás seguro de que deseas eliminar este usuario?",
-                    "Confirmar eliminación",
-                    JOptionPane.YES_NO_OPTION);
-
-            if (confirmacion == JOptionPane.YES_OPTION) {
-                if (seleccion.equals("👩‍🎓 Estudiantes")) {
-                    gestorEstudiantes.eliminarEstudiante(id);
-                    cargarEstudiantes();
-                } else {
-                    gestorProfesores.eliminarProfesor(id);
-                    cargarProfesores();
+            getContentPane().setBackground(colorFondo);
+            for (Component comp : getContentPane().getComponents()) {
+                if (comp instanceof JPanel) {
+                    comp.setBackground(colorFondo);
                 }
             }
-        } else {
-            mostrarAdvertencia("⚠️ Selecciona un usuario para eliminar.");
         }
-    }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  🔍 VER DETALLES DEL USUARIO              ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void verDetalles() {
-        int fila = tablaUsuarios.getSelectedRow();
-        if (fila != -1) {
-            String id = (String) modeloTabla.getValueAt(fila, 0);
-            String seleccion = (String) selectorVista.getSelectedItem();
 
-            if (seleccion.equals("👩‍🎓 Estudiantes")) {
-                Estudiante seleccionado = gestorEstudiantes.consultarEstudiante(id);
-                new DetallesEstudianteControlador(this, seleccionado).setVisible(true);
-            } else {
-                Profesor seleccionado = gestorProfesores.consultarProfesor(id);
-                new DetallesProfesorControlador(this, seleccionado).setVisible(true);
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  📋 CARGAR ESTUDIANTES                    ║
+        // ╚════════════════════════════════════════════════════════════╝
+        private void cargarEstudiantes () {
+            modeloTabla.setRowCount(0);
+            modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Correo"});
+            for (Estudiante e : gestorEstudiantes.listarEstudiantes()) {
+                modeloTabla.addRow(new Object[]{
+                        e.getIdentificacionPersonal(),
+                        e.getNombreCompleto(),
+                        e.getCorreoElectronico()
+                });
             }
-        } else {
-            mostrarAdvertencia("⚠️ Selecciona un usuario para ver sus detalles.");
         }
-    }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                  ⚠️ MENSAJES DE ALERTA                    ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void mostrarAdvertencia(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
-    }
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  📋 CARGAR PROFESORES                     ║
+        // ╚════════════════════════════════════════════════════════════╝
+        private void cargarProfesores () {
+            modeloTabla.setRowCount(0);
+            modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Correo"});
+            for (Profesor p : gestorProfesores.listarProfesores()) {
+                modeloTabla.addRow(new Object[]{
+                        p.getIdentificacionPersonal(),
+                        p.getNombreCompleto(),
+                        p.getCorreoElectronico()
+                });
+            }
+        }
 
-    private void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+        // ╔════════════════════════════════════════════════════════════╗
+// ║                     📚 CARGAR CURSOS                       ║
+// ╚════════════════════════════════════════════════════════════╝
+        private void cargarCursos () {
+            modeloTabla.setRowCount(0);
+            modeloTabla.setColumnIdentifiers(new String[]{
+                    "ID", "Nombre", "Descripción", "Horas/Día", "Min Estudiantes", "Max Estudiantes",
+                    "Calificación Mínima", "Modalidad", "Tipo de Curso"
+            });
+
+            for (Curso c : GestorCursos.listarCursos()) {
+                modeloTabla.addRow(new Object[]{
+                        c.getIdentificacionCurso(),
+                        c.getnombreCurso(),
+                        c.getdescripcionCurso(),
+                        c.gethorasDia(),
+                        c.getcantidadMinimaE(),
+                        c.getcantidadMaximaE(),
+                        c.getcalificacionMinimaE(),
+                        c.getmodalidad().toString().replace("_", " "), // para legibilidad
+                        c.gettipoCurso().toString()
+                });
+            }
+        }
+
+
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  ➕ REGISTRAR USUARIO                      ║
+        // ╚════════════════════════════════════════════════════════════╝
+        private void abrirRegistro () {
+            String seleccion = (String) selectorVista.getSelectedItem();
+            switch (seleccion) {
+                case "👩‍🎓 Estudiantes":
+                    new RegistroEstudianteControlador(this).setVisible(true);
+                    cargarEstudiantes();
+                    break;
+                case "👨‍🏫 Profesores":
+                    new RegistroProfesorControlador(this).setVisible(true);
+                    cargarProfesores();
+                    break;
+                case "📚 Cursos":
+                    new RegistroCursoControlador(this).setVisible(true);
+                    cargarCursos();
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this, "Vista no reconocida: " + seleccion);
+            }
+        }
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  ✏️ MODIFICAR USUARIO                     ║
+        // ╚════════════════════════════════════════════════════════════╝
+
+        private void abrirModificacion () {
+            int fila = tablaUsuarios.getSelectedRow();
+            if (fila != -1) {
+                String id = (String) modeloTabla.getValueAt(fila, 0);
+                String seleccion = (String) selectorVista.getSelectedItem();
+
+                switch (seleccion) {
+                    case "👩‍🎓 Estudiantes":
+                        Estudiante estudiante = gestorEstudiantes.consultarEstudiante(id);
+                        new ModificarEstudianteControlador(this, estudiante).setVisible(true);
+                        cargarEstudiantes();
+                        break;
+                    case "👨‍🏫 Profesores":
+                        Profesor profesor = gestorProfesores.consultarProfesor(id);
+                        new ModificarProfesorControlador(this, profesor).setVisible(true);
+                        cargarProfesores();
+                        break;
+                    case "📚 Cursos":
+                        Curso curso = gestorCursos.consultarCurso(id);
+                        new ModificarCursoControlador(this, curso).setVisible(true);
+                        cargarCursos();
+                        break;
+                    default:
+                        mostrarAdvertencia("⚠️ Vista no reconocida: " + seleccion);
+                }
+            } else {
+                mostrarAdvertencia("⚠️ Selecciona un usuario para modificar.");
+            }
+        }
+
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  🗑️ ELIMINAR USUARIO                       ║
+        // ╚════════════════════════════════════════════════════════════╝
+
+
+        private void eliminarUsuario () {
+            int fila = tablaUsuarios.getSelectedRow();
+            if (fila != -1) {
+                String id = (String) modeloTabla.getValueAt(fila, 0);
+                String seleccion = (String) selectorVista.getSelectedItem();
+
+                int confirmacion = JOptionPane.showConfirmDialog(this,
+                        "¿Estás seguro de que deseas eliminar este elemento?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    switch (seleccion) {
+                        case "👩‍🎓 Estudiantes":
+                            gestorEstudiantes.eliminarEstudiante(id);
+                            cargarEstudiantes();
+                            break;
+                        case "👨‍🏫 Profesores":
+                            gestorProfesores.eliminarProfesor(id);
+                            cargarProfesores();
+                            break;
+                        case "📚 Cursos":
+                            gestorCursos.eliminarCurso(id);
+                            cargarCursos();
+                            break;
+                        default:
+                            mostrarAdvertencia("⚠️ Vista no reconocida: " + seleccion);
+                    }
+                }
+            } else {
+                mostrarAdvertencia("⚠️ Selecciona un elemento para eliminar.");
+            }
+        }
+
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  🔍 VER DETALLES DEL USUARIO                      ║
+        // ╚
+
+
+        private void verDetalles () {
+            int fila = tablaUsuarios.getSelectedRow();
+            if (fila != -1) {
+                String id = (String) modeloTabla.getValueAt(fila, 0);
+                String seleccion = (String) selectorVista.getSelectedItem();
+
+                switch (seleccion) {
+                    case "👩‍🎓 Estudiantes":
+                        Estudiante estudiante = gestorEstudiantes.consultarEstudiante(id);
+                        new DetallesEstudianteControlador(this, estudiante).setVisible(true);
+                        break;
+                    case "👨‍🏫 Profesores":
+                        Profesor profesor = gestorProfesores.consultarProfesor(id);
+                        new DetallesProfesorControlador(this, profesor).setVisible(true);
+                        break;
+                    case "📚 Cursos":
+                        Curso curso = gestorCursos.consultarCurso(id);
+                        new DetallesCursoControlador(this, curso).setVisible(true);
+                        break;
+                    default:
+                        mostrarAdvertencia("⚠️ Vista no reconocida: " + seleccion);
+                }
+            } else {
+                mostrarAdvertencia("⚠️ Selecciona un elemento para ver sus detalles.");
+            }
+        }
+
+
+        // ╔════════════════════════════════════════════════════════════╗
+        // ║                  ⚠️ MENSAJES DE ALERTA                    ║
+        // ╚════════════════════════════════════════════════════════════╝
+        private void mostrarAdvertencia (String mensaje){
+            JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+
+        private void mostrarError (String mensaje){
+            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+        }}
     }
-}
 

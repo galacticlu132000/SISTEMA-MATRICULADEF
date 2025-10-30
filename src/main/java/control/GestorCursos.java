@@ -39,6 +39,21 @@ public class GestorCursos {
     }
 
 
+    public List<Curso> listarCursos() {
+        return new ArrayList<>(cursos);
+    }
+
+    // ╔════════════════════════════════════════════════════════════╗
+// ║                  🔍 CONSULTA POR IDENTIFICACIÓN           ║
+// ╚════════════════════════════════════════════════════════════╝
+    public Curso consultarCurso(String id) {
+        return buscarPorID(id);
+    }
+
+
+
+
+
     public boolean actualizarCursos(Curso actualizado) {
         String id = actualizado.getIdentificacionCurso();
         Curso cursoExistente = buscarPorID(id);
@@ -70,7 +85,26 @@ public class GestorCursos {
         }
         return null;
     }
-    ///////////////ESTE ES EL Q FALTA
+    // ╔════════════════════════════════════════════════════════════╗
+// ║                  🗑️ ELIMINACIÓN DE CURSO                   ║
+// ╚════════════════════════════════════════════════════════════╝
+    public boolean eliminarCurso(String id) {
+        Iterator<Curso> iter = cursos.iterator();
+        while (iter.hasNext()) {
+            Curso c = iter.next();
+            if (c.getIdentificacionCurso().equals(id)) {
+                iter.remove();
+                System.out.println("🗑️ Curso eliminado: " + c);
+                return true;
+            }
+        }
+        System.out.println("❌ No se encontró el curso.");
+        return false;
+    }
+
+
+
+
     public List<Curso> obtenerCursos() {
         return cursos;
     }
