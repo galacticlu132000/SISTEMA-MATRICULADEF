@@ -51,6 +51,22 @@ private void aplicarEstiloGlobal() {
     UIManager.put("ComboBox.font", new Font("Segoe UI Emoji", Font.PLAIN, 14));
 }
 
+    private final java.util.Map<String, Curso.Modalidad> modalidadMap = java.util.Map.of(
+            "Presencial", Curso.Modalidad.PRESENCIAL,
+            "Virtual Sincrónica", Curso.Modalidad.VIRTUAL_SINCRONICA,
+            "Virtual Asincrónica", Curso.Modalidad.VIRTUAL_ASINCRONICA,
+            "Virtual Híbrida", Curso.Modalidad.VIRTUAL_HIBRIDA,
+            "Semipresencial", Curso.Modalidad.SEMIPRESENCIAL
+    );
+
+    private final java.util.Map<String, Curso.Tipo_Curso> tipoCursoMap = java.util.Map.of(
+            "Teórico", Curso.Tipo_Curso.TEORICO,
+            "Práctico", Curso.Tipo_Curso.PRACTICO,
+            "Taller", Curso.Tipo_Curso.TALLER,
+            "Seminario", Curso.Tipo_Curso.SEMINARIO
+    );
+
+
     // ╔════════════════════════════════════════════════════════════╗
 // ║              LISTENER PARA VALIDACIÓN EN TIEMPO REAL       ║
 // ╚════════════════════════════════════════════════════════════╝
@@ -96,12 +112,10 @@ private void inicializarComponentes() {
     txtMaxEstudiantes  = new JTextField();
     txtMinCalificacion = new JTextField();
 
-    comboModalidad = new JComboBox<>(new String[]{
-            "PRESENCIAL", "VIRTUAL_SINCRONICA", "VIRTUAL_ASINCRONICA", "VIRTUAL_HIBRIDA", "SEMIPRESENCIAL"
-    });
-    comboTipoCurso = new JComboBox<>(new String[]{
-            "TEORICO", "PRACTICO", "TALLER", "SEMINARIO"
-    });
+
+
+    comboModalidad = new JComboBox<>(modalidadMap.keySet().toArray(new String[0]));
+    comboTipoCurso = new JComboBox<>(tipoCursoMap.keySet().toArray(new String[0]));
 
     String[] etiquetas = {
             "🆔 Identificación:", "📘 Nombre:", "📝 Descripción:", "⏱️ Horas por día:",
@@ -179,8 +193,20 @@ private boolean validarCampos() {
 
     boolean horasValidas = validarEntero(txtHoras, 1, 8, "Horas por día entre 1 y 8");
     boolean minEstudiantesValidos = validarEntero(txtMinEstudiantes, 1, 5, "Mínimo entre 1 y 5");
-    boolean maxEstudiantesValidos = validarEntero(txtMaxEstudiantes,
-            Integer.parseInt(txtMinEstudiantes.getText()), 20, "Máximo entre mínimo y 20");
+    boolean maxEstudiantesValidos = false;
+    String textoMin = txtMinEstudiantes.getText().trim();
+
+    if (!textoMin.isEmpty()) {
+        try {
+            int min = Integer.parseInt(textoMin);
+            maxEstudiantesValidos = validarEntero(txtMaxEstudiantes, min, 20, "Máximo entre mínimo y 20");
+        } catch (NumberFormatException e) {
+            aplicarEstiloCampo(txtMaxEstudiantes, false, "El mínimo debe ser un número válido");
+        }
+    } else {
+        aplicarEstiloCampo(txtMaxEstudiantes, false, "Primero completa el mínimo");
+    }
+
     boolean calificacionValida = validarEntero(txtMinCalificacion, 0, 100, "Calificación entre 0 y 100");
 
     return nombreValido && descripcionValida && horasValidas &&
@@ -211,8 +237,9 @@ private void guardarCambios() {
         cursoOriginal.setCantidadMinimaE(Integer.parseInt(txtMinEstudiantes.getText().trim()));
         cursoOriginal.setCantidadMaximaE(Integer.parseInt(txtMaxEstudiantes.getText().trim()));
         cursoOriginal.setCalificacionMinimaE(Integer.parseInt(txtMinCalificacion.getText().trim()));
-        cursoOriginal.setModalidad(Curso.Modalidad.valueOf(comboModalidad.getSelectedItem().toString()));
-        cursoOriginal.setTipoCurso(Curso.Tipo_Curso.valueOf(comboTipoCurso.getSelectedItem().toString()));
+        cursoOriginal.setModalidad(modalidadMap.get(comboModalidad.getSelectedItem().toString()));
+        cursoOriginal.setTipoCurso(tipoCursoMap.get(comboTipoCurso.getSelectedItem().toString()));
+
 
         boolean exito = gestor.actualizarCursos(cursoOriginal);
         if (exito) {

@@ -119,6 +119,30 @@ public class Profesor extends Usuario {
         return Encriptador.verificar(ingresada, contrasenaTemporal);
     }
 
+    // ╔════════════════════════════════════════════════════════════════════╗
+// ║                 📚 ASOCIACIÓN DE GRUPOS A PROFESOR                ║
+// ╚════════════════════════════════════════════════════════════════════╝
+
+    private ArrayList<GrupoCurso> gruposAsignados = new ArrayList<>();
+
+    public ArrayList<GrupoCurso> getGruposAsignados() {
+        return new ArrayList<>(gruposAsignados); // copia defensiva
+    }
+
+    public boolean agregarGrupo(GrupoCurso grupo) {
+        if (grupo == null) return false;
+        if (!gruposAsignados.contains(grupo)) {
+            gruposAsignados.add(grupo);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean eliminarGrupo(GrupoCurso grupo) {
+        return gruposAsignados.remove(grupo);
+    }
+
+
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                   REPRESENTACIÓN EN TEXTO                         ║

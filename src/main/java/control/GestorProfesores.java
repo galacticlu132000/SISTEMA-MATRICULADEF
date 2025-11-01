@@ -1,4 +1,5 @@
 package control;
+import usuarios.GrupoCurso;
 import usuarios.Profesor;
 import java.util.*;
 
@@ -98,6 +99,8 @@ public class GestorProfesores {
         return null;
     }
 
+
+
     // ╔════════════════════════════════════════════════════════════╗
     // ║                  ✅ VALIDACIONES ÚNICAS                   ║
     // ╚════════════════════════════════════════════════════════════╝
@@ -108,4 +111,5 @@ public class GestorProfesores {
     public boolean existeCorreo(String correo) {
         return profesores.stream().anyMatch(p -> p.getCorreoElectronico().equalsIgnoreCase(correo));
     }
+
 }

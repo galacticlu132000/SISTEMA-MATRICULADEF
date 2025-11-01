@@ -4,7 +4,7 @@ import java.util.*;
 
 public class GestorCursos {
     private static final GestorCursos instancia = new GestorCursos();
-    private List<Curso> cursos = new ArrayList<>();
+    private static List<Curso> cursos = new ArrayList<>();
 
     private GestorCursos() {
     }
@@ -39,7 +39,7 @@ public class GestorCursos {
     }
 
 
-    public List<Curso> listarCursos() {
+    public static List<Curso> listarCursos() {
         return new ArrayList<>(cursos);
     }
 

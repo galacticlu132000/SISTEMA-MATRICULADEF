@@ -42,7 +42,7 @@ public class Curso {
                  int modalidad,
                  int tipo_Curso) {
 
-        if (identificacionCurso == null || identificacionCurso.length() != 6) {
+        if (identificacionCurso == null || identificacionCurso.length()> 6||identificacionCurso.length()<6) {
             throw new IllegalArgumentException("La identificación del curso debe tener exactamente 6 caracteres.");
         }
         if (nombreCurso == null || nombreCurso.length() < 5 || nombreCurso.length() > 40) {
@@ -76,9 +76,7 @@ public class Curso {
                 case 5: this.modalidad = Modalidad.SEMIPRESENCIAL; break;
             }
         }
-        if (tipo_Curso < 1 || tipo_Curso > 4) {
-            throw new IllegalArgumentException("Tipo de curso inválido. Debe ser un número entre 1 y 4.");
-        } else {
+         {
             switch (tipo_Curso) {
                 case 1: this.tipo_Curso = Tipo_Curso.TEORICO; break;
                 case 2: this.tipo_Curso = Tipo_Curso.PRACTICO; break;

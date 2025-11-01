@@ -70,12 +70,8 @@ public class RegistroCursoControlador extends JDialog {
         campoMaxEstudiantes  = new JTextField();
         campoMinCalificacion = new JTextField();
 
-        comboModalidad = new JComboBox<>(new String[]{
-                "PRESENCIAL", "VIRTUAL_SINCRONICA", "VIRTUAL_ASINCRONICA", "VIRTUAL_HIBRIDA", "SEMIPRESENCIAL"
-        });
-        comboTipoCurso = new JComboBox<>(new String[]{
-                "TEORICO", "PRACTICO", "TALLER", "SEMINARIO"
-        });
+        comboModalidad = new JComboBox<>(modalidadMap.keySet().toArray(new String[0]));
+        comboTipoCurso = new JComboBox<>(tipoCursoMap.keySet().toArray(new String[0]));
 
         botonRegistrar = new JButton("📝 Registrar curso");
 
@@ -135,7 +131,7 @@ public class RegistroCursoControlador extends JDialog {
     // ╚════════════════════════════════════════════════════════════╝
     private void validarCampos() {
         boolean valido =
-                validarCampo(campoID, 5, 20, "Entre 5 y 20 caracteres") &
+                validarCampo(campoID, 6, 6, "6 caracteres max") &
                         validarCampo(campoNombre, 5, 40, "Entre 5 y 40 caracteres") &
                         validarCampo(campoDescripcion, 5, 400, "Entre 5 y 400 caracteres") &
                         validarEntero(campoHoras, 1, 8, "Horas por día entre 1 y 8") &
