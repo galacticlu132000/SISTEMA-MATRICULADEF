@@ -4,12 +4,15 @@ import control.GestorCursos;
 import control.GestorGruposCurso;
 import usuarios.Curso;
 import usuarios.GrupoCurso;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import javax.swing.*;
+import java.awt.*;
+
+
 
 public class RegistroGrupoCursoControlador extends JDialog {
     private final GestorCursos gestorCursos = GestorCursos.getInstancia();
@@ -34,7 +37,6 @@ public class RegistroGrupoCursoControlador extends JDialog {
     }
 
     private void inicializarComponentes() {
-        // Panel superior: selección de curso y fechas
         JPanel panelFormulario = new JPanel(new GridLayout(3, 4, 10, 10));
         comboCursos = new JComboBox<>(gestorCursos.listarCursos().toArray(new Curso[0]));
         campoFechaInicio = new JTextField("2025-11-01");
@@ -57,17 +59,14 @@ public class RegistroGrupoCursoControlador extends JDialog {
 
         add(panelFormulario, BorderLayout.NORTH);
 
-        // Tabla de grupos
-        modeloTabla = new DefaultTableModel(new String[]{"Grupo", "Inicio", "Fin"}, 0);
+        modeloTabla = new DefaultTableModel(new String[]{"Grupo", "Curso", "Inicio", "Fin"}, 0);
         tablaGrupos = new JTable(modeloTabla);
         add(new JScrollPane(tablaGrupos), BorderLayout.CENTER);
 
-        // Eventos
         comboCursos.addActionListener(e -> actualizarTabla());
         btnAgregarGrupo.addActionListener(e -> registrarGrupo());
         btnEliminarGrupo.addActionListener(e -> eliminarGrupoSeleccionado());
 
-        // Cargar tabla inicial
         actualizarTabla();
     }
 
@@ -85,7 +84,7 @@ public class RegistroGrupoCursoControlador extends JDialog {
             }
 
             int nuevoId = gestorGruposCurso.obtenerSiguienteIdGrupo(curso.getIdentificacionCurso());
-            GrupoCurso grupo = new GrupoCurso(nuevoId, inicio, fin);
+            GrupoCurso grupo = new GrupoCurso(nuevoId, inicio, fin, curso);
             gestorGruposCurso.agregarGrupo(curso.getIdentificacionCurso(), grupo);
 
             JOptionPane.showMessageDialog(this, "✅ Grupo registrado exitosamente.");
@@ -104,7 +103,7 @@ public class RegistroGrupoCursoControlador extends JDialog {
             int idGrupo = (int) modeloTabla.getValueAt(fila, 0);
 
             int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Estás seguro de eliminar el grupo " + idGrupo + "?",
+                    "¿Estás segura de eliminar el grupo " + idGrupo + "?",
                     "Confirmar eliminación",
                     JOptionPane.YES_NO_OPTION);
 
@@ -130,10 +129,10 @@ public class RegistroGrupoCursoControlador extends JDialog {
         for (GrupoCurso grupo : gestorGruposCurso.listarGrupos(curso.getIdentificacionCurso())) {
             modeloTabla.addRow(new Object[]{
                     grupo.getIdGrupo(),
+                    grupo.getCurso().getnombreCurso(),
                     grupo.getFechaInicio(),
                     grupo.getFechaFin()
             });
         }
     }
 }
-

@@ -1,6 +1,7 @@
 package gui.admin;
 
 import gui.grupocurso.RegistroGrupoCursoControlador;
+import gui.gruposprofesores.RegistroProfesorGrupoControlador;
 import usuarios.Estudiante;
 import usuarios.Profesor;
 import usuarios.Curso;
@@ -34,6 +35,8 @@ public class MenuAdministradorControlador extends JFrame {
     private JComboBox<String> selectorVista;
     private final String[] opcionesVista = {"👩‍🎓 Estudiantes", "👨‍🏫 Profesores", "📚 Cursos"};
     private JButton btnGruposCurso;
+    private JButton btnAsociarGrupoProfesor;
+
 
 
     // ╔════════════════════════════════════════════════════════════╗
@@ -115,12 +118,22 @@ public class MenuAdministradorControlador extends JFrame {
         btnGruposCurso.addActionListener(e -> abrirVentanaGruposCurso());
         btnGruposCurso.setVisible(false); // Oculto por defecto
 
+        btnAsociarGrupoProfesor = new JButton("👥 Asociar Grupo a Profesor");
+        btnAsociarGrupoProfesor.setFocusPainted(false);
+        btnAsociarGrupoProfesor.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 220)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        btnAsociarGrupoProfesor.addActionListener(e -> abrirVentanaAsociacion());
+        btnAsociarGrupoProfesor.setVisible(false); // Oculto por defecto
+
+
         // Panel inferior con botones
         JPanel botones = new JPanel(new GridLayout(1, 5, 10, 0)); // ahora con 5 columnas
         botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         botones.setBackground(new Color(240, 240, 255));
 
-        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnGruposCurso}) {
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnGruposCurso,btnAsociarGrupoProfesor}) {
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(180, 180, 220)),
@@ -178,12 +191,20 @@ public class MenuAdministradorControlador extends JFrame {
 
         actualizarColoresVista(seleccion);
 
-        if (seleccion.equals("👩‍🎓 Estudiantes")) {
+        boolean esVistaEstudiantes = "👩‍🎓 Estudiantes".equals(seleccion);
+        boolean esVistaProfesores = "👨‍🏫 Profesores".equals(seleccion);
+        boolean esVistaCursos = "📚 Cursos".equals(seleccion);
+
+        // Mostrar u ocultar botones específicos
+        btnGruposCurso.setVisible(esVistaCursos);
+        btnAsociarGrupoProfesor.setVisible(esVistaCursos);
+
+        // Cargar datos según vista
+        if (esVistaEstudiantes) {
             cargarEstudiantes();
-        } else if (seleccion.equals("👨‍🏫 Profesores")) {
+        } else if (esVistaProfesores) {
             cargarProfesores();
-        } else if (seleccion.equals("📚 Cursos")) {
-            btnGruposCurso.setVisible("📚 Cursos".equals(seleccion));
+        } else if (esVistaCursos) {
             cargarCursos();
         }
     }
@@ -211,6 +232,11 @@ public class MenuAdministradorControlador extends JFrame {
             }
         }
     }
+
+    private void abrirVentanaAsociacion() {
+        new RegistroProfesorGrupoControlador(this);
+    }
+
 
 
     // ╔════════════════════════════════════════════════════════════╗
@@ -253,7 +279,7 @@ public class MenuAdministradorControlador extends JFrame {
                 "Calificación Mínima", "Modalidad", "Tipo de Curso"
         });
 
-        for (Curso c : GestorCursos.listarCursos()) {
+        for (Curso c : gestorCursos.listarCursos()) {
             modeloTabla.addRow(new Object[]{
                     c.getIdentificacionCurso(),
                     c.getnombreCurso(),

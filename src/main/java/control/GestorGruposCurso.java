@@ -57,4 +57,28 @@ public class GestorGruposCurso {
         List<GrupoCurso> grupos = gruposPorCurso.get(idCurso);
         return (grupos == null) ? 1 : grupos.size() + 1;
     }
+
+
+
+    public String[] getNombresGrupos() {
+        List<String> nombres = new ArrayList<>();
+        for (List<GrupoCurso> lista : gruposPorCurso.values()) {
+            for (GrupoCurso grupo : lista) {
+                nombres.add(grupo.getNombre());
+            }
+        }
+        return nombres.toArray(new String[0]);
+    }
+
+    public GrupoCurso buscarPorNombre(String nombre) {
+        for (List<GrupoCurso> lista : gruposPorCurso.values()) {
+            for (GrupoCurso grupo : lista) {
+                if (grupo.getNombre().equalsIgnoreCase(nombre)) {
+                    return grupo;
+                }
+            }
+        }
+        return null;
+    }
+
 }

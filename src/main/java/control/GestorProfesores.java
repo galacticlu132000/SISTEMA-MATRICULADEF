@@ -101,6 +101,28 @@ public class GestorProfesores {
 
 
 
+    public String[] getNombresProfesores() {
+        return profesores.stream()
+                .map(Profesor::getNombre)
+                .toArray(String[]::new);
+    }
+
+    public Profesor buscarPorNombre(String nombre) {
+        for (Profesor p : profesores) {
+            if (p.getNombre().equalsIgnoreCase(nombre)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public boolean asociarGrupo(Profesor profesor, GrupoCurso grupo) {
+        return profesor.agregarGrupo(grupo);
+    }
+
+
+
+
     // ╔════════════════════════════════════════════════════════════╗
     // ║                  ✅ VALIDACIONES ÚNICAS                   ║
     // ╚════════════════════════════════════════════════════════════╝

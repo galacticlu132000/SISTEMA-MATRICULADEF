@@ -174,7 +174,7 @@ public class Curso {
 
     public void agregarGrupo(LocalDate inicio, LocalDate fin) {
         int nuevoId = grupos.size() + 1;
-        GrupoCurso nuevoGrupo = new GrupoCurso(nuevoId, inicio, fin);
+        GrupoCurso nuevoGrupo = new GrupoCurso(nuevoId, inicio, fin,this);
         grupos.add(nuevoGrupo);
     }
 
