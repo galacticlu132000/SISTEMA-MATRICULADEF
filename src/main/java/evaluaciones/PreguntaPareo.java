@@ -22,6 +22,17 @@ public class PreguntaPareo extends Pregunta {
     }
 
     @Override
+    public String representacionDetallada() {
+        StringBuilder sb = new StringBuilder("Pareo:\n");
+        for (int i = 0; i < columna1.size(); i++) {
+            sb.append(" ").append(i + 1).append(". ").append(columna2.get(i))
+                    .append(" ↔ ").append(columna2.get(indicesRelacionados.get(i))).append("\n");
+        }
+        return sb.toString();
+    }
+
+
+    @Override
     public boolean validarRespuesta(Object respuesta) {
         return respuesta instanceof List && respuesta.equals(indicesRelacionados);
     }

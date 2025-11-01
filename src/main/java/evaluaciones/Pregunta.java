@@ -35,5 +35,7 @@ public abstract class Pregunta {
     public abstract String getTipo();
 
     public abstract boolean validarRespuesta(Object respuesta);
-}
 
+    // ✅ Nuevo método para mostrar detalles específicos
+    public abstract String representacionDetallada();
+}

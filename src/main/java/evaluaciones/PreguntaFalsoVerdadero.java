@@ -15,6 +15,13 @@ public class PreguntaFalsoVerdadero extends Pregunta {
     }
 
     @Override
+    public String representacionDetallada() {
+        return "Opciones:\n 1. Verdadero" + (respuestaCorrecta ? " ✅" : "") +
+                "\n 2. Falso" + (!respuestaCorrecta ? " ✅" : "");
+    }
+
+
+    @Override
     public boolean validarRespuesta(Object respuesta) {
         return respuesta instanceof Boolean && (boolean) respuesta == respuestaCorrecta;
     }

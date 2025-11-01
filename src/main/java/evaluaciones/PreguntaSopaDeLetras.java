@@ -38,4 +38,22 @@ public class PreguntaSopaDeLetras extends Pregunta {
     public char[][] getCuadricula() {
         return cuadrícula;
     }
+
+    @Override
+    public String representacionDetallada() {
+        StringBuilder sb = new StringBuilder("Palabras clave:\n");
+        for (int i = 0; i < palabrasClave.size(); i++) {
+            sb.append(" ").append(i + 1).append(". ").append(palabrasClave.get(i))
+                    .append(" ← ").append(enunciados.get(i)).append("\n");
+        }
+        sb.append("\nCuadrícula:\n");
+        for (char[] fila : cuadrícula) {
+            for (char c : fila) {
+                sb.append(c).append(" ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
 }

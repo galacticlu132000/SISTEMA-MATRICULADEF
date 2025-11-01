@@ -15,6 +15,18 @@ public class PreguntaSeleccionUnica extends Pregunta {
     }
 
     @Override
+    public String representacionDetallada() {
+        StringBuilder sb = new StringBuilder("Opciones:\n");
+        for (int i = 0; i < opciones.size(); i++) {
+            sb.append(" ").append(i + 1).append(". ").append(opciones.get(i));
+            if (i == indiceCorrecto) sb.append(" ✅");
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+
+    @Override
     public String getTipo() {
         return "Selección Única";
     }
