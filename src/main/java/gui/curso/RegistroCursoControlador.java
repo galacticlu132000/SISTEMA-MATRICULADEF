@@ -181,7 +181,7 @@ public class RegistroCursoControlador extends JDialog {
         campo.setToolTipText(valido ? null : tooltip);
     }
 
-    private final java.util.Map<String, Curso.Modalidad> modalidadMap = java.util.Map.of(
+    private final Map<String, Curso.Modalidad> modalidadMap = Map.of(
             "Presencial", Curso.Modalidad.PRESENCIAL,
             "Virtual Sincrónica", Curso.Modalidad.VIRTUAL_SINCRONICA,
             "Virtual Asincrónica", Curso.Modalidad.VIRTUAL_ASINCRONICA,
@@ -189,7 +189,7 @@ public class RegistroCursoControlador extends JDialog {
             "Semipresencial", Curso.Modalidad.SEMIPRESENCIAL
     );
 
-    private final java.util.Map<String, Curso.Tipo_Curso> tipoCursoMap = java.util.Map.of(
+    private final Map<String, Curso.Tipo_Curso> tipoCursoMap = Map.of(
             "Teórico", Curso.Tipo_Curso.TEORICO,
             "Práctico", Curso.Tipo_Curso.PRACTICO,
             "Taller", Curso.Tipo_Curso.TALLER,
@@ -197,8 +197,20 @@ public class RegistroCursoControlador extends JDialog {
     );
 
 
+
     private void registrarCurso() {
         try {
+            // Obtener los enums directamente desde los mapas
+            Curso.Modalidad modalidad = modalidadMap.get(comboModalidad.getSelectedItem().toString());
+            Curso.Tipo_Curso tipoCurso = tipoCursoMap.get(comboTipoCurso.getSelectedItem().toString());
+
+            // Validar que no sean nulos
+            if (modalidad == null || tipoCurso == null) {
+                mostrarAlerta("⚠️ Selección inválida", "Debes seleccionar una modalidad y un tipo de curso válidos.");
+                return;
+            }
+
+            // Crear el curso con enums directamente
             Curso nuevo = new Curso(
                     campoID.getText().trim(),
                     campoNombre.getText().trim(),
@@ -207,19 +219,24 @@ public class RegistroCursoControlador extends JDialog {
                     Integer.parseInt(campoMinEstudiantes.getText().trim()),
                     Integer.parseInt(campoMaxEstudiantes.getText().trim()),
                     Integer.parseInt(campoMinCalificacion.getText().trim()),
-                    modalidadMap.get(comboModalidad.getSelectedItem().toString()).ordinal(),
-                    tipoCursoMap.get(comboTipoCurso.getSelectedItem().toString()).ordinal()
+                    modalidad,
+                    tipoCurso
             );
 
             gestor.registrarCursos(nuevo);
             mostrarAlerta("✅ Registro exitoso", "El curso ha sido registrado correctamente.");
             dispose();
 
+        } catch (NumberFormatException ex) {
+            mostrarAlerta("⚠️ Error de formato", "Verifica que todos los campos numéricos contengan valores válidos.");
+        } catch (IllegalArgumentException ex) {
+            mostrarAlerta("❌ Datos inválidos", ex.getMessage());
         } catch (Exception e) {
             mostrarAlerta("❌ Error inesperado", "No se pudo registrar el curso.");
             e.printStackTrace();
         }
     }
+
 
     private void mostrarAlerta(String titulo, String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);

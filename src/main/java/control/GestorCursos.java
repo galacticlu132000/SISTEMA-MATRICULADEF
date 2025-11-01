@@ -1,5 +1,7 @@
 package control;
 import usuarios.Curso;
+
+import javax.swing.*;
 import java.util.*;
 
 public class GestorCursos {
@@ -12,6 +14,8 @@ public class GestorCursos {
     public static GestorCursos getInstancia() { // ✅ Acceso global
         return instancia;
     }
+
+
 
 
     public boolean registrarCursos(Curso nuevo) {
@@ -105,7 +109,7 @@ public class GestorCursos {
 
 
 
-    public List<Curso> obtenerCursos() {
+    public static List<Curso> obtenerCursos() {
         return cursos;
     }
     public void mostrarCursos() {

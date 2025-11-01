@@ -36,6 +36,8 @@ public class MenuAdministradorControlador extends JFrame {
     private final String[] opcionesVista = {"👩‍🎓 Estudiantes", "👨‍🏫 Profesores", "📚 Cursos"};
     private JButton btnGruposCurso;
     private JButton btnAsociarGrupoProfesor;
+    private JButton btnReportes; // 📄 Botón para reportes
+
 
 
 
@@ -127,13 +129,22 @@ public class MenuAdministradorControlador extends JFrame {
         btnAsociarGrupoProfesor.addActionListener(e -> abrirVentanaAsociacion());
         btnAsociarGrupoProfesor.setVisible(false); // Oculto por defecto
 
+        btnReportes = new JButton("📄 Reportes");
+        btnReportes.setFocusPainted(false);
+        btnReportes.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 220)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        btnReportes.addActionListener(e -> abrirVentanaReportes());
+
+
 
         // Panel inferior con botones
         JPanel botones = new JPanel(new GridLayout(1, 5, 10, 0)); // ahora con 5 columnas
         botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         botones.setBackground(new Color(240, 240, 255));
 
-        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnGruposCurso,btnAsociarGrupoProfesor}) {
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnGruposCurso,btnAsociarGrupoProfesor,btnReportes}) {
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(180, 180, 220)),
@@ -440,6 +451,14 @@ public class MenuAdministradorControlador extends JFrame {
     private void abrirVentanaGruposCurso() {
         new RegistroGrupoCursoControlador(this);
     }
+
+    private void abrirVentanaReportes() {
+        new ReportesAdministradorControlador();
+    }
+
 }
+
+
+
 
 

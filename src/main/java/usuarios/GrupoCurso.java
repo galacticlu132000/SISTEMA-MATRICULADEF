@@ -1,12 +1,16 @@
 package usuarios;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GrupoCurso {
     private int idGrupo;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Curso curso; // Composición: referencia al curso
+    private List<Estudiante> estudiantes;
+
 
     public GrupoCurso(int idGrupo, LocalDate fechaInicio, LocalDate fechaFin, Curso curso) {
         if (idGrupo < 1) {
@@ -23,6 +27,7 @@ public class GrupoCurso {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.curso = curso;
+        this.estudiantes = new ArrayList<>();
     }
 
     public int getIdGrupo() {
@@ -44,6 +49,11 @@ public class GrupoCurso {
     public String getNombre() {
         return "Grupo " + idGrupo + " – " + curso.getnombreCurso();
     }
+
+    public List<Estudiante> getEstudiantes() {
+        return estudiantes;
+    }
+
 
     @Override
     public String toString() {

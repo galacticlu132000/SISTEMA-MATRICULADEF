@@ -1,12 +1,10 @@
 package control;
+
 import java.util.*;
 import usuarios.GrupoCurso;
 
-
 public class GestorGruposCurso {
     private static final GestorGruposCurso instancia = new GestorGruposCurso();
-
-    // Mapa que asocia ID de curso con su lista de grupos
     private final Map<String, List<GrupoCurso>> gruposPorCurso = new HashMap<>();
 
     private GestorGruposCurso() {}
@@ -15,26 +13,20 @@ public class GestorGruposCurso {
         return instancia;
     }
 
-    // Agrega un grupo a un curso específico
     public void agregarGrupo(String idCurso, GrupoCurso grupo) {
         gruposPorCurso.computeIfAbsent(idCurso, k -> new ArrayList<>()).add(grupo);
         System.out.println("✅ Grupo agregado al curso " + idCurso + ": " + grupo);
     }
 
-
-
-    // Devuelve la lista de grupos de un curso
     public List<GrupoCurso> listarGrupos(String idCurso) {
         return gruposPorCurso.getOrDefault(idCurso, new ArrayList<>());
     }
 
-    // Elimina todos los grupos de un curso (opcional)
     public void eliminarGruposDeCurso(String idCurso) {
         gruposPorCurso.remove(idCurso);
         System.out.println("🗑️ Todos los grupos del curso " + idCurso + " han sido eliminados.");
     }
 
-    // Elimina un grupo específico por ID dentro de un curso
     public boolean eliminarGrupo(String idCurso, int idGrupo) {
         List<GrupoCurso> grupos = gruposPorCurso.get(idCurso);
         if (grupos != null) {
@@ -52,13 +44,10 @@ public class GestorGruposCurso {
         return false;
     }
 
-    // Devuelve el siguiente número de grupo para un curso
     public int obtenerSiguienteIdGrupo(String idCurso) {
         List<GrupoCurso> grupos = gruposPorCurso.get(idCurso);
         return (grupos == null) ? 1 : grupos.size() + 1;
     }
-
-
 
     public String[] getNombresGrupos() {
         List<String> nombres = new ArrayList<>();
@@ -81,4 +70,11 @@ public class GestorGruposCurso {
         return null;
     }
 
+    public void imprimirGrupos(String idCurso) {
+        List<GrupoCurso> grupos = listarGrupos(idCurso);
+        System.out.println("📋 Grupos del curso " + idCurso + ":");
+        for (GrupoCurso g : grupos) {
+            System.out.println(" - " + g.getIdGrupo() + ": " + g.getNombre());
+        }
+    }
 }

@@ -4,23 +4,22 @@ import control.GestorCursos;
 import control.GestorGruposCurso;
 import usuarios.Curso;
 import usuarios.GrupoCurso;
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import javax.swing.*;
-import java.awt.*;
-
-
+import java.time.ZoneId;
+import java.util.Date;
 
 public class RegistroGrupoCursoControlador extends JDialog {
     private final GestorCursos gestorCursos = GestorCursos.getInstancia();
     private final GestorGruposCurso gestorGruposCurso = GestorGruposCurso.getInstancia();
 
     private JComboBox<Curso> comboCursos;
-    private JTextField campoFechaInicio;
-    private JTextField campoFechaFin;
+    private JDateChooser campoFechaInicio;
+    private JDateChooser campoFechaFin;
     private JButton btnAgregarGrupo;
     private JButton btnEliminarGrupo;
     private JTable tablaGrupos;
@@ -39,16 +38,23 @@ public class RegistroGrupoCursoControlador extends JDialog {
     private void inicializarComponentes() {
         JPanel panelFormulario = new JPanel(new GridLayout(3, 4, 10, 10));
         comboCursos = new JComboBox<>(gestorCursos.listarCursos().toArray(new Curso[0]));
-        campoFechaInicio = new JTextField("2025-11-01");
-        campoFechaFin = new JTextField("2025-12-15");
+
+        campoFechaInicio = new JDateChooser();
+        campoFechaInicio.setDateFormatString("yyyy-MM-dd");
+        campoFechaInicio.setDate(new Date());
+
+        campoFechaFin = new JDateChooser();
+        campoFechaFin.setDateFormatString("yyyy-MM-dd");
+        campoFechaFin.setDate(new Date());
+
         btnAgregarGrupo = new JButton("➕ Agregar grupo");
         btnEliminarGrupo = new JButton("🗑️ Eliminar grupo seleccionado");
 
         panelFormulario.add(new JLabel("Curso:"));
         panelFormulario.add(comboCursos);
-        panelFormulario.add(new JLabel("Fecha inicio (YYYY-MM-DD):"));
+        panelFormulario.add(new JLabel("Fecha inicio:"));
         panelFormulario.add(campoFechaInicio);
-        panelFormulario.add(new JLabel("Fecha fin (YYYY-MM-DD):"));
+        panelFormulario.add(new JLabel("Fecha fin:"));
         panelFormulario.add(campoFechaFin);
         panelFormulario.add(new JLabel(""));
         panelFormulario.add(btnAgregarGrupo);
@@ -72,28 +78,33 @@ public class RegistroGrupoCursoControlador extends JDialog {
 
     private void registrarGrupo() {
         Curso curso = (Curso) comboCursos.getSelectedItem();
-        if (curso == null) return;
-
-        try {
-            LocalDate inicio = LocalDate.parse(campoFechaInicio.getText().trim());
-            LocalDate fin = LocalDate.parse(campoFechaFin.getText().trim());
-
-            if (fin.isBefore(inicio)) {
-                JOptionPane.showMessageDialog(this, "❌ La fecha de finalización no puede ser anterior a la de inicio.");
-                return;
-            }
-
-            int nuevoId = gestorGruposCurso.obtenerSiguienteIdGrupo(curso.getIdentificacionCurso());
-            GrupoCurso grupo = new GrupoCurso(nuevoId, inicio, fin, curso);
-            gestorGruposCurso.agregarGrupo(curso.getIdentificacionCurso(), grupo);
-
-            JOptionPane.showMessageDialog(this, "✅ Grupo registrado exitosamente.");
-            actualizarTabla();
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this, "❌ Formato de fecha inválido. Usa YYYY-MM-DD.");
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, "❌ " + ex.getMessage());
+        if (curso == null) {
+            JOptionPane.showMessageDialog(this, "⚠️ Selecciona un curso.");
+            return;
         }
+
+        Date fechaInicio = campoFechaInicio.getDate();
+        Date fechaFin = campoFechaFin.getDate();
+
+        if (fechaInicio == null || fechaFin == null) {
+            JOptionPane.showMessageDialog(this, "⚠️ Selecciona ambas fechas.");
+            return;
+        }
+
+        LocalDate inicio = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fin = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        if (fin.isBefore(inicio)) {
+            JOptionPane.showMessageDialog(this, "❌ La fecha de finalización no puede ser anterior a la de inicio.");
+            return;
+        }
+
+        int nuevoId = gestorGruposCurso.obtenerSiguienteIdGrupo(curso.getIdentificacionCurso());
+        GrupoCurso grupo = new GrupoCurso(nuevoId, inicio, fin, curso);
+        gestorGruposCurso.agregarGrupo(curso.getIdentificacionCurso(), grupo);
+
+        JOptionPane.showMessageDialog(this, "✅ Grupo registrado exitosamente.");
+        actualizarTabla();
     }
 
     private void eliminarGrupoSeleccionado() {
