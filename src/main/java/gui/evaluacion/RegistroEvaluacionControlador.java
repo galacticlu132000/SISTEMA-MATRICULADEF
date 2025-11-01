@@ -1,6 +1,7 @@
 package gui.evaluacion;
 import evaluaciones.Evaluacion;
 import evaluaciones.Pregunta;
+import gui.evaluacion.util.DialogoAgregarPregunta;
 import usuarios.Profesor;
 import control.GestorEvaluaciones;
 import javax.swing.*;

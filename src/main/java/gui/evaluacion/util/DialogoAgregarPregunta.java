@@ -1,9 +1,12 @@
-package gui.evaluacion;
+package gui.evaluacion.util;
 import evaluaciones.*;
+import gui.evaluacion.pareo.CampoPareo;
+import gui.evaluacion.seleccionm.CampoOpcionesMultiple;
+import gui.evaluacion.seleccionu.CampoOpcionesUnica;
+import gui.evaluacion.sopa.CampoSopaDeLetras;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
@@ -85,19 +88,34 @@ public class DialogoAgregarPregunta extends JDialog {
     // ╚════════════════════════════════════════════════════════════╝
 
     private JPanel crearPanelSeleccionUnica() {
-        JPanel panel = new PreguntaBasica("Selección Única");
+        JPanel panel = new PanelPreguntaBasica("Selección Única") {
+            @Override
+            public Pregunta crearPreguntaFinal() {
+                return null;
+            }
+        };
         panel.add(new CampoOpcionesUnica(panel));
         return panel;
     }
 
     private JPanel crearPanelSeleccionMultiple() {
-        JPanel panel = new PreguntaBasica("Selección Múltiple");
+        JPanel panel = new PanelPreguntaBasica("Selección Múltiple") {
+            @Override
+            public Pregunta crearPreguntaFinal() {
+                return null;
+            }
+        };
         panel.add(new CampoOpcionesMultiple(panel));
         return panel;
     }
 
     private JPanel crearPanelFalsoVerdadero() {
-        JPanel panel = new PreguntaBasica("Falso/Verdadero");
+        JPanel panel = new PanelPreguntaBasica("Falso/Verdadero") {
+            @Override
+            public Pregunta crearPreguntaFinal() {
+                return null;
+            }
+        };
         JCheckBox chkVerdadero = new JCheckBox("✔ Verdadero es la respuesta correcta");
         panel.add(chkVerdadero);
         panel.putClientProperty("respuestaCorrecta", chkVerdadero);
@@ -105,14 +123,24 @@ public class DialogoAgregarPregunta extends JDialog {
     }
 
     private JPanel crearPanelPareo() {
-        JPanel panel = new PreguntaBasica("Pareo");
+        JPanel panel = new PanelPreguntaBasica("Pareo") {
+            @Override
+            public Pregunta crearPreguntaFinal() {
+                return null;
+            }
+        };
         panel.add(new CampoPareo(panel));
         return panel;
     }
 
     private JPanel crearPanelSopa() {
-        JPanel panel = new PreguntaBasica("Sopa de Letras");
-        panel.add(new CampoSopa(panel));
+        JPanel panel = new PanelPreguntaBasica("Sopa de Letras") {
+            @Override
+            public Pregunta crearPreguntaFinal() {
+                return null;
+            }
+        };
+        panel.add(new CampoSopaDeLetras(panel));
         return panel;
     }
 
@@ -130,7 +158,7 @@ public class DialogoAgregarPregunta extends JDialog {
             default -> null;
         };
 
-        if (activo instanceof PreguntaBasica panel) {
+        if (activo instanceof PanelPreguntaBasica panel) {
             preguntaCreada = panel.crearPreguntaFinal();
             if (preguntaCreada != null) {
                 dispose();

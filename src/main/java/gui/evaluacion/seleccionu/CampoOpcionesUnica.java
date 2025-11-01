@@ -1,4 +1,4 @@
-package gui.evaluacion;
+package gui.evaluacion.seleccionu;
 
 
 import evaluaciones.PreguntaSeleccionUnica;

@@ -1,4 +1,4 @@
-package gui.evaluacion;
+package gui.evaluacion.util;
 
 import evaluaciones.Pregunta;
 
@@ -12,13 +12,13 @@ import java.awt.*;
  * ║ Panel base con campos comunes para cualquier tipo de pregunta.            ║
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
-public abstract class PreguntaBasica extends JPanel {
+public abstract class PanelPreguntaBasica extends JPanel {
 
     protected JTextField campoDescripcion;
     protected JTextField campoPuntos;
     protected String tipo;
 
-    public PreguntaBasica(String tipo) {
+    public PanelPreguntaBasica(String tipo) {
         this.tipo = tipo;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(255, 255, 255));
