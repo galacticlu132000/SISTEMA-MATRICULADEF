@@ -1,88 +1,167 @@
 package gui.profesor;
+
+import control.GestorEvaluaciones;
 import usuarios.Profesor;
+import evaluaciones.Evaluacion;
+import gui.evaluacion.RegistroEvaluacionControlador;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
- * ║ 🎓 MenuProfesorControlador                                                 ║
+ * ║ 🎓 MenuProfesorPanelControlador                                           ║
  * ║                                                                            ║
- * ║ Ventana Swing que muestra la información personal del profesor activo.    ║
+ * ║ Panel principal para profesores:                                          ║
+ * ║ - Consultar información personal                                          ║
+ * ║ - CRUD de evaluaciones                                                    ║
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
 public class MenuProfesorControlador extends JFrame {
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                      COMPONENTES UI                        ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private JLabel tituloBienvenida;
-    private JLabel labelNombre, labelID, labelCorreo, labelTelefono,
-            labelDireccion, labelTitulos, labelCertificaciones;
-
+    private JTable tablaEvaluaciones;
+    private DefaultTableModel modeloTabla;
+    private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles;
+    private JButton btnConsultarInfo;
+    private final GestorEvaluaciones gestorEvaluaciones = GestorEvaluaciones.getInstancia();
     private static Profesor profesorActivo;
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                      CONSTRUCTOR                           ║
-    // ╚════════════════════════════════════════════════════════════╝
     public MenuProfesorControlador(Profesor profesor) {
         profesorActivo = profesor;
-        setTitle("🎓 Menú del Profesor");
-        setSize(500, 400);
-        setLocationRelativeTo(null);
+        aplicarEstiloGlobal();
+        setTitle("🎓 Panel del Profesor");
+        setSize(900, 550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         inicializarComponentes();
-        cargarDatosProfesor();
+        cargarEvaluaciones();
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              INICIALIZACIÓN DE COMPONENTES                ║
-    // ╚════════════════════════════════════════════════════════════╝
+    private void aplicarEstiloGlobal() {
+        UIManager.put("Table.background", new Color(235, 255, 250)); // Verde agua claro
+        UIManager.put("Panel.background", new Color(220, 245, 240));
+        UIManager.put("Button.background", new Color(200, 230, 220));
+        UIManager.put("Button.foreground", Color.DARK_GRAY);
+        UIManager.put("Button.font", new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        UIManager.put("Table.font", new Font("Segoe UI Emoji", Font.PLAIN, 13));
+        UIManager.put("Label.font", new Font("Segoe UI Emoji", Font.BOLD, 16));
+    }
+
     private void inicializarComponentes() {
-        JPanel panel = new JPanel(new GridLayout(8, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+        add(crearEncabezado(), BorderLayout.NORTH);
 
-        tituloBienvenida    = new JLabel();
-        labelNombre         = new JLabel();
-        labelID             = new JLabel();
-        labelCorreo         = new JLabel();
-        labelTelefono       = new JLabel();
-        labelDireccion      = new JLabel();
-        labelTitulos        = new JLabel();
-        labelCertificaciones= new JLabel();
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Duración", "Objetivos"}, 0);
+        tablaEvaluaciones = new JTable(modeloTabla);
+        tablaEvaluaciones.setRowHeight(25);
+        tablaEvaluaciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scroll = new JScrollPane(tablaEvaluaciones);
+        scroll.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        add(scroll, BorderLayout.CENTER);
 
-        panel.add(new JLabel("👋 Bienvenida:"));         panel.add(tituloBienvenida);
-        panel.add(new JLabel("👤 Nombre completo:"));    panel.add(labelNombre);
-        panel.add(new JLabel("🆔 Identificación:"));     panel.add(labelID);
-        panel.add(new JLabel("📧 Correo electrónico:")); panel.add(labelCorreo);
-        panel.add(new JLabel("📞 Teléfono:"));           panel.add(labelTelefono);
-        panel.add(new JLabel("🏠 Dirección:"));          panel.add(labelDireccion);
-        panel.add(new JLabel("🎓 Títulos obtenidos:"));  panel.add(labelTitulos);
-        panel.add(new JLabel("📜 Certificaciones:"));    panel.add(labelCertificaciones);
+        btnRegistrar = new JButton("➕ Crear Evaluación");
+        btnModificar = new JButton("✏️ Modificar");
+        btnEliminar = new JButton("🗑️ Eliminar");
+        btnDetalles = new JButton("🔍 Ver Detalles");
+        btnConsultarInfo = new JButton("👤 Mi Información");
 
-        add(panel);
+        JPanel botones = new JPanel(new GridLayout(1, 5, 10, 0));
+        botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        botones.setBackground(new Color(220, 245, 240));
+
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnConsultarInfo}) {
+            btn.setFocusPainted(false);
+            btn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(180, 220, 200)),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
+            botones.add(btn);
+        }
+
+        add(botones, BorderLayout.SOUTH);
+
+        btnRegistrar.addActionListener(e -> abrirRegistro());
+        btnModificar.addActionListener(e -> abrirModificacion());
+        btnEliminar.addActionListener(e -> eliminarEvaluacion());
+        btnDetalles.addActionListener(e -> verDetalles());
+        btnConsultarInfo.addActionListener(e -> new MenuProfesorControlador(profesorActivo).setVisible(true));
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              CARGAR DATOS DEL PROFESOR                    ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void cargarDatosProfesor() {
-        if (profesorActivo != null) {
-            tituloBienvenida.setText("👨‍🏫 Bienvenida, " + profesorActivo.getNombre());
-            labelNombre.setText(profesorActivo.getNombreCompleto());
-            labelID.setText(profesorActivo.getIdentificacionPersonal());
-            labelCorreo.setText(profesorActivo.getCorreoElectronico());
-            labelTelefono.setText(profesorActivo.getNumeroTelefono());
-            labelDireccion.setText(profesorActivo.getDireccionFisica());
-            labelTitulos.setText(String.join(", ", profesorActivo.getTitulos()));
-            labelCertificaciones.setText(String.join(", ", profesorActivo.getCertificaciones()));
+    private JPanel crearEncabezado() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(100, 200, 180)); // Verde agua profundo
+
+        JLabel titulo = new JLabel("🎓 Panel del Profesor", JLabel.LEFT);
+        titulo.setForeground(Color.WHITE);
+        titulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 18));
+
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        izquierda.setOpaque(false);
+        izquierda.add(titulo);
+
+        header.add(izquierda, BorderLayout.WEST);
+        header.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        return header;
+    }
+
+    private void cargarEvaluaciones() {
+        modeloTabla.setRowCount(0);
+        for (Evaluacion e : gestorEvaluaciones.listarEvaluacionesPorProfesor(profesorActivo)) {
+            modeloTabla.addRow(new Object[]{
+                    e.getIdEvaluacion(),
+                    e.getNombreEvaluacion(),
+                    e.getDuracionMinutos() + " min",
+                    String.join(", ", e.getObjetivos())
+            });
         }
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              MÉTODO PARA USO EXTERNO (OPCIONAL)           ║
-    // ╚════════════════════════════════════════════════════════════╝
-    public static void setProfesorActivo(Profesor profesor) {
-        profesorActivo = profesor;
+    private void abrirRegistro() {
+        new RegistroEvaluacionControlador(this, profesorActivo).setVisible(true);
+        cargarEvaluaciones();
+    }
+
+    private void abrirModificacion() {
+        int fila = tablaEvaluaciones.getSelectedRow();
+        if (fila != -1) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            Evaluacion evaluacion = gestorEvaluaciones.consultarEvaluacion(id);
+            new ModificarEvaluacionControlador(this, evaluacion).setVisible(true);
+            cargarEvaluaciones();
+        } else {
+            mostrarAdvertencia("⚠️ Selecciona una evaluación para modificar.");
+        }
+    }
+
+    private void eliminarEvaluacion() {
+        int fila = tablaEvaluaciones.getSelectedRow();
+        if (fila != -1) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            int confirmacion = JOptionPane.showConfirmDialog(this,
+                    "¿Eliminar esta evaluación?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                gestorEvaluaciones.eliminarEvaluacion(id);
+                cargarEvaluaciones();
+            }
+        } else {
+            mostrarAdvertencia("⚠️ Selecciona una evaluación para eliminar.");
+        }
+    }
+
+    private void verDetalles() {
+        int fila = tablaEvaluaciones.getSelectedRow();
+        if (fila != -1) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            Evaluacion evaluacion = gestorEvaluaciones.consultarEvaluacion(id);
+            new DetallesEvaluacionControlador(this, evaluacion).setVisible(true);
+        } else {
+            mostrarAdvertencia("⚠️ Selecciona una evaluación para ver detalles.");
+        }
+    }
+
+    private void mostrarAdvertencia(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
     }
 }
