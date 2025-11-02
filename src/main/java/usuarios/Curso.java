@@ -145,6 +145,10 @@ public class Curso {
         return tipo_Curso;
     }
 
+    public String getIdentificacion() {
+        return this.identificacionCurso;
+    }
+
 
 
 

@@ -1,22 +1,28 @@
 package gui.login;
+import control.GestorCursos;
+import control.GestorGruposCurso;
 import control.GestorProfesores;
 
-import usuarios.Estudiante;
-import usuarios.Administrador;
-import usuarios.Profesor;
+import evaluacion.Evaluacion;
+import evaluacion.GestorEvaluaciones;
+import evaluacion.Pregunta;
+import usuarios.*;
 import control.GestorEstudiantes;
 import main.Main;
-import usuarios.Usuario;
 import utilidades.correo.Correo;
 import utilidades.correo.GestorCorreos;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static seguridad.Encriptador.encriptar;
+import static usuarios.Curso.Modalidad.PRESENCIAL;
+import static usuarios.Curso.Tipo_Curso.TEORICO;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
@@ -137,19 +143,27 @@ public class ControladorLogin extends JPanel {
     }
 
     // ╔════════════════════════════════════════════════════════════╗
-    // ║              REGISTRO DE ESTUDIANTE DE PRUEBA             ║
-    // ╚════════════════════════════════════════════════════════════╝
+// ║              REGISTRO DE DATOS DE PRUEBA                   ║
+// ╚════════════════════════════════════════════════════════════╝
+// ╔════════════════════════════════════════════════════════════╗
+// ║              REGISTRO DE DATOS DE PRUEBA                   ║
+// ╚════════════════════════════════════════════════════════════╝
 
+    GestorEstudiantes gestorEstudiantes= GestorEstudiantes.getInstancia();
+    GestorProfesores gestorProfesores = GestorProfesores.getInstancia();
+    GestorCursos gestorCursos = GestorCursos.getInstancia();
+    GestorEvaluaciones gestorEvaluaciones = GestorEvaluaciones.getInstancia();
 
-
+    // 🧑‍🎓 Estudiante
     Estudiante estudiantePrueba = new Estudiante(
-                        "Lucía", "González", "Ramírez", "lucia12345",
-                        "88889999", "lucia@email.com", "San José",
-                        "ClaveSegura123!", "Universidad de Costa Rica",
-                        new ArrayList<>(List.of("Java avanzado", "Diseño de interfaces"))
-                );
-   boolean r=gestor.registrarEstudiante(estudiantePrueba);
+            "Lucía", "González", "Ramírez", "lucia12345",
+            "88889999", "lucia@email.com", "San José",
+            "ClaveSegura123!", "Universidad de Costa Rica",
+            new ArrayList<>(List.of("Java avanzado", "Diseño de interfaces"))
+    );
+boolean registrado=gestorEstudiantes.registrarEstudiante(estudiantePrueba);
 
+    // 👨‍🏫 Profesor
     Profesor profesorPrueba = new Profesor(
             "Carlos", "Mora", "Soto", "profe12345",
             "89998888", "carlos@tec.ac.cr", "Cartago",
@@ -157,7 +171,29 @@ public class ControladorLogin extends JPanel {
             new ArrayList<>(List.of("Maestría en Educación", "Doctorado en Informática")),
             new ArrayList<>(List.of("Certificación Java", "Certificación en Didáctica"))
     );
- boolean r2=gestor2.registrarProfesor(profesorPrueba);
+boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
+
+    // 📚 Curso
+    Curso cursoPrueba = new Curso(
+            "TEC001", "Programación OO", "Curso de objetos y clases",
+            4, 2, 3, 20,PRESENCIAL,TEORICO
+    );
+boolean registrado3=gestorCursos.registrarCursos(cursoPrueba);
+
+    // 👥 Grupo
+    GrupoCurso grupoPrueba = new GrupoCurso(1, LocalDate.of(2025, 11, 1), LocalDate.of(2025, 12, 15),cursoPrueba);
+    String idcurso= cursoPrueba.getIdentificacion();
+String idCurso=cursoPrueba.getIdentificacion();
+GestorGruposCurso gestorGrupos=GestorGruposCurso.getInstancia();
+boolean grupo=gestorGrupos.agregarGrupo(idCurso,grupoPrueba);
+// 🔗 Asociación grupo–profesor
+boolean grupoProfesor=gestorProfesores.asociarGrupo(profesorPrueba, grupoPrueba);
+
+    // 📝 Evaluación
+    List<String> objetivos = List.of("Aplicar principios de POO", "Diseñar clases con herencia");
+    List<Pregunta> preguntas = new ArrayList<>();
+
+
 
 
 

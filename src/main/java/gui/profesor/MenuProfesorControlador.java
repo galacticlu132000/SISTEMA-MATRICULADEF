@@ -1,9 +1,8 @@
 package gui.profesor;
-
-import control.GestorEvaluaciones;
+import evaluacion.GestorEvaluaciones;
+import evaluacion.Evaluacion;
+import gui.evaluaciones.*;
 import usuarios.Profesor;
-import evaluaciones.Evaluacion;
-import gui.evaluacion.RegistroEvaluacionControlador;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,11 +10,10 @@ import java.awt.*;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
- * ║ 🎓 MenuProfesorPanelControlador                                           ║
+ * ║ 🧑‍🏫 MenuProfesorControlador                                               ║
  * ║                                                                            ║
- * ║ Panel principal para profesores:                                          ║
- * ║ - Consultar información personal                                          ║
- * ║ - CRUD de evaluaciones                                                    ║
+ * ║ Interfaz Swing para gestionar evaluaciones:                               ║
+ * ║ - Crear, modificar, eliminar, ver detalles, asignar y reportar            ║
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
 public class MenuProfesorControlador extends JFrame {
@@ -23,25 +21,31 @@ public class MenuProfesorControlador extends JFrame {
     private JTable tablaEvaluaciones;
     private DefaultTableModel modeloTabla;
     private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles;
-    private JButton btnConsultarInfo;
+    private JButton btnPrevisualizar, btnAsignarGrupo, btnReportes;
+    private final Profesor profesorActual;
+
+
     private final GestorEvaluaciones gestorEvaluaciones = GestorEvaluaciones.getInstancia();
-    private static Profesor profesorActivo;
 
     public MenuProfesorControlador(Profesor profesor) {
-        profesorActivo = profesor;
+        this.profesorActual = profesor;
         aplicarEstiloGlobal();
-        setTitle("🎓 Panel del Profesor");
+        setTitle("🧑‍🏫 Panel del Profesor");
         setSize(900, 550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         inicializarComponentes();
-        cargarEvaluaciones();
+        cargarEvaluaciones(profesorActual);
     }
 
     private void aplicarEstiloGlobal() {
-        UIManager.put("Table.background", new Color(235, 255, 250)); // Verde agua claro
-        UIManager.put("Panel.background", new Color(220, 245, 240));
-        UIManager.put("Button.background", new Color(200, 230, 220));
+        UIManager.put("Table.background", new Color(240, 255, 250));
+        UIManager.put("Table.foreground", Color.DARK_GRAY);
+        UIManager.put("Table.selectionBackground", new Color(180, 230, 200));
+        UIManager.put("Table.selectionForeground", Color.BLACK);
+        UIManager.put("Table.gridColor", new Color(200, 200, 200));
+        UIManager.put("Panel.background", new Color(230, 250, 240));
+        UIManager.put("Button.background", new Color(200, 240, 220));
         UIManager.put("Button.foreground", Color.DARK_GRAY);
         UIManager.put("Button.font", new Font("Segoe UI Emoji", Font.PLAIN, 14));
         UIManager.put("Table.font", new Font("Segoe UI Emoji", Font.PLAIN, 13));
@@ -51,10 +55,16 @@ public class MenuProfesorControlador extends JFrame {
     private void inicializarComponentes() {
         add(crearEncabezado(), BorderLayout.NORTH);
 
-        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Duración", "Objetivos"}, 0);
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Duración", "Preguntas"}, 0);
         tablaEvaluaciones = new JTable(modeloTabla);
         tablaEvaluaciones.setRowHeight(25);
+        tablaEvaluaciones.setShowHorizontalLines(true);
+        tablaEvaluaciones.setShowVerticalLines(false);
         tablaEvaluaciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tablaEvaluaciones.getTableHeader().setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        tablaEvaluaciones.getTableHeader().setBackground(new Color(180, 220, 200));
+        tablaEvaluaciones.getTableHeader().setForeground(Color.DARK_GRAY);
+
         JScrollPane scroll = new JScrollPane(tablaEvaluaciones);
         scroll.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         add(scroll, BorderLayout.CENTER);
@@ -63,16 +73,18 @@ public class MenuProfesorControlador extends JFrame {
         btnModificar = new JButton("✏️ Modificar");
         btnEliminar = new JButton("🗑️ Eliminar");
         btnDetalles = new JButton("🔍 Ver Detalles");
-        btnConsultarInfo = new JButton("👤 Mi Información");
+        btnPrevisualizar = new JButton("🧪 Previsualizar");
+        btnAsignarGrupo = new JButton("📎 Asignar a Grupo");
+        btnReportes = new JButton("📄 Reportes");
 
-        JPanel botones = new JPanel(new GridLayout(1, 5, 10, 0));
+        JPanel botones = new JPanel(new GridLayout(1, 7, 10, 0));
         botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        botones.setBackground(new Color(220, 245, 240));
+        botones.setBackground(new Color(230, 250, 240));
 
-        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnConsultarInfo}) {
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnPrevisualizar, btnAsignarGrupo, btnReportes}) {
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(180, 220, 200)),
+                    BorderFactory.createLineBorder(new Color(160, 200, 180)),
                     BorderFactory.createEmptyBorder(5, 10, 5, 10)
             ));
             botones.add(btn);
@@ -84,14 +96,16 @@ public class MenuProfesorControlador extends JFrame {
         btnModificar.addActionListener(e -> abrirModificacion());
         btnEliminar.addActionListener(e -> eliminarEvaluacion());
         btnDetalles.addActionListener(e -> verDetalles());
-        btnConsultarInfo.addActionListener(e -> new MenuProfesorControlador(profesorActivo).setVisible(true));
+        btnPrevisualizar.addActionListener(e -> previsualizarEvaluacion());
+        btnAsignarGrupo.addActionListener(e -> asignarEvaluacionAGrupo());
+        btnReportes.addActionListener(e -> abrirReportes());
     }
 
     private JPanel crearEncabezado() {
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(100, 200, 180)); // Verde agua profundo
+        header.setBackground(new Color(60, 160, 130));
 
-        JLabel titulo = new JLabel("🎓 Panel del Profesor", JLabel.LEFT);
+        JLabel titulo = new JLabel("🧑‍🏫 Panel del Profesor", JLabel.LEFT);
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 18));
 
@@ -104,21 +118,21 @@ public class MenuProfesorControlador extends JFrame {
         return header;
     }
 
-    private void cargarEvaluaciones() {
+    private void cargarEvaluaciones(Profesor profesor) {
         modeloTabla.setRowCount(0);
-        for (Evaluacion e : gestorEvaluaciones.listarEvaluacionesPorProfesor(profesorActivo)) {
+        for (Evaluacion e : gestorEvaluaciones.listarEvaluacionesPorProfesor(profesor)) {
             modeloTabla.addRow(new Object[]{
                     e.getIdEvaluacion(),
-                    e.getNombreEvaluacion(),
+                    e.getNombre(),
                     e.getDuracionMinutos() + " min",
-                    String.join(", ", e.getObjetivos())
+                    e.getPreguntas().size()
             });
         }
     }
 
     private void abrirRegistro() {
-        new RegistroEvaluacionControlador(this, profesorActivo).setVisible(true);
-        cargarEvaluaciones();
+        new RegistroEvaluacionControlador(this,profesorActual).setVisible(true);
+        cargarEvaluaciones(profesorActual);
     }
 
     private void abrirModificacion() {
@@ -127,7 +141,7 @@ public class MenuProfesorControlador extends JFrame {
             int id = (int) modeloTabla.getValueAt(fila, 0);
             Evaluacion evaluacion = gestorEvaluaciones.consultarEvaluacion(id);
             new ModificarEvaluacionControlador(this, evaluacion).setVisible(true);
-            cargarEvaluaciones();
+            cargarEvaluaciones(profesorActual);
         } else {
             mostrarAdvertencia("⚠️ Selecciona una evaluación para modificar.");
         }
@@ -143,7 +157,7 @@ public class MenuProfesorControlador extends JFrame {
                     JOptionPane.YES_NO_OPTION);
             if (confirmacion == JOptionPane.YES_OPTION) {
                 gestorEvaluaciones.eliminarEvaluacion(id);
-                cargarEvaluaciones();
+                cargarEvaluaciones(profesorActual);
             }
         } else {
             mostrarAdvertencia("⚠️ Selecciona una evaluación para eliminar.");
@@ -159,6 +173,32 @@ public class MenuProfesorControlador extends JFrame {
         } else {
             mostrarAdvertencia("⚠️ Selecciona una evaluación para ver detalles.");
         }
+    }
+
+    private void previsualizarEvaluacion() {
+        int fila = tablaEvaluaciones.getSelectedRow();
+        if (fila != -1) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            Evaluacion evaluacion = gestorEvaluaciones.consultarEvaluacion(id);
+            new PrevisualizarEvaluacionControlador(this, evaluacion).setVisible(true);
+        } else {
+            mostrarAdvertencia("⚠️ Selecciona una evaluación para previsualizar.");
+        }
+    }
+
+    private void asignarEvaluacionAGrupo() {
+        int fila = tablaEvaluaciones.getSelectedRow();
+        if (fila != -1) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            Evaluacion evaluacion = gestorEvaluaciones.consultarEvaluacion(id);
+            new AsignarEvaluacionGrupoControlador(this, evaluacion).setVisible(true);
+        } else {
+            mostrarAdvertencia("⚠️ Selecciona una evaluación para asignar.");
+        }
+    }
+
+    private void abrirReportes() {
+        new ReportesProfesorControlador(this,profesorActual);
     }
 
     private void mostrarAdvertencia(String mensaje) {

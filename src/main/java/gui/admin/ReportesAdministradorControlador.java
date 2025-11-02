@@ -4,6 +4,7 @@ import control.GestorCursos;
 import control.GestorGruposCurso;
 import control.GestorReportesAdministrador;
 import control.Generadorpdf;
+import evaluacion.Evaluacion;
 import usuarios.Curso;
 import usuarios.Estudiante;
 import usuarios.GrupoCurso;
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
@@ -221,4 +223,7 @@ public class ReportesAdministradorControlador extends JFrame {
             pdf.agregarSeccionEstadistica(curso, grupo, cantidad);
         }
     }
+
+
+
 }

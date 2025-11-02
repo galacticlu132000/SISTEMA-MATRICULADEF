@@ -13,9 +13,10 @@ public class GestorGruposCurso {
         return instancia;
     }
 
-    public void agregarGrupo(String idCurso, GrupoCurso grupo) {
+    public boolean agregarGrupo(String idCurso, GrupoCurso grupo) {
         gruposPorCurso.computeIfAbsent(idCurso, k -> new ArrayList<>()).add(grupo);
         System.out.println("✅ Grupo agregado al curso " + idCurso + ": " + grupo);
+        return false;
     }
 
     public List<GrupoCurso> listarGrupos(String idCurso) {
