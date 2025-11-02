@@ -131,8 +131,14 @@ public class MenuProfesorControlador extends JFrame {
     }
 
     private void abrirRegistro() {
-        new RegistroEvaluacionControlador(this,profesorActual).setVisible(true);
-        cargarEvaluaciones(profesorActual);
+        RegistroEvaluacionControlador registro = new RegistroEvaluacionControlador(this, profesorActual);
+        registro.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                cargarEvaluaciones(profesorActual);
+            }
+        });
+        registro.setVisible(true);
     }
 
     private void abrirModificacion() {

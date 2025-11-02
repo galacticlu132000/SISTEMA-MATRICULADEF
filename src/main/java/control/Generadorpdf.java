@@ -1,6 +1,4 @@
 package control;
-
-
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import usuarios.Curso;
