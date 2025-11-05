@@ -20,7 +20,7 @@ public class MenuProfesorControlador extends JFrame {
 
     private JTable tablaEvaluaciones;
     private DefaultTableModel modeloTabla;
-    private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles;
+    private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles,btnDetallesProfesor;
     private JButton btnPrevisualizar, btnAsignarGrupo, btnReportes;
     private final Profesor profesorActual;
 
@@ -76,12 +76,14 @@ public class MenuProfesorControlador extends JFrame {
         btnPrevisualizar = new JButton("🧪 Previsualizar");
         btnAsignarGrupo = new JButton("📎 Asignar a Grupo");
         btnReportes = new JButton("📄 Reportes");
+        btnDetallesProfesor = new JButton("👨‍🏫 Detalles del Profesor");
+
 
         JPanel botones = new JPanel(new GridLayout(1, 7, 10, 0));
         botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         botones.setBackground(new Color(230, 250, 240));
 
-        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnPrevisualizar, btnAsignarGrupo, btnReportes}) {
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnPrevisualizar, btnAsignarGrupo, btnReportes,btnDetallesProfesor}) {
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(160, 200, 180)),
@@ -99,6 +101,7 @@ public class MenuProfesorControlador extends JFrame {
         btnPrevisualizar.addActionListener(e -> previsualizarEvaluacion());
         btnAsignarGrupo.addActionListener(e -> asignarEvaluacionAGrupo());
         btnReportes.addActionListener(e -> abrirReportes());
+        btnDetallesProfesor.addActionListener(e-> abrirDetallesProfesor());
     }
 
     private JPanel crearEncabezado() {
@@ -131,9 +134,12 @@ public class MenuProfesorControlador extends JFrame {
     }
 
     private void abrirRegistro() {
-        new RegistroEvaluacionControlador(this,profesorActual).setVisible(true);
-        cargarEvaluaciones(profesorActual);
+        RegistroEvaluacionControlador dialog = new RegistroEvaluacionControlador(this, profesorActual);
+        dialog.setVisible(true); // espera hasta que se cierre
+        cargarEvaluaciones(profesorActual); // 👈 ahora sí refresca después de guardar
     }
+
+
 
     private void abrirModificacion() {
         int fila = tablaEvaluaciones.getSelectedRow();
@@ -200,6 +206,12 @@ public class MenuProfesorControlador extends JFrame {
     private void abrirReportes() {
         new ReportesProfesorControlador(this,profesorActual);
     }
+
+    private void abrirDetallesProfesor() {
+        DetallesProfesorControlador dialog = new DetallesProfesorControlador(this, profesorActual);
+        dialog.setVisible(true); // 👈 esto abre la ventana modal
+    }
+
 
     private void mostrarAdvertencia(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
