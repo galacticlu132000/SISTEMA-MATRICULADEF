@@ -64,8 +64,8 @@ public class GestorCursos {
 
         if (cursoExistente != null) {
             try {
-                cursoExistente.setNombreCurso(actualizado.getnombreCurso());
-                cursoExistente.setDescripcionCurso(actualizado.getdescripcionCurso());
+                cursoExistente.setNombreCurso(actualizado.getNombreCurso());
+                cursoExistente.setDescripcionCurso(actualizado.getDescripcionCurso());
                 // Puedes agregar más setters si decides permitir editar otros campos
                 System.out.println("Curso actualizado exitosamente: " + cursoExistente);
                 return true;

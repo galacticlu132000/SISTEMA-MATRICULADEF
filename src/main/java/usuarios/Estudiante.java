@@ -1,29 +1,86 @@
+/*
+ * ╔════════════════════════════════════════════════════════════════════════════╗
+ * ║                  SISTEMA DE MATRÍCULA Y CALIFICACIONES (TEC)               ║
+ * ║ Módulo: usuarios                                                           ║
+ * ║ Archivo: Estudiante.java                                                   ║
+ * ║ Autoría: Lucía                                                             ║
+ * ║ Propósito: Representa un estudiante registrado en el sistema.              ║
+ * ║ Dependencias: Usuario.java, seguridad.Encriptador                          ║
+ * ║ Versión: 1.0                                                               ║
+ * ║ Última actualización: 2025-11-05                                           ║
+ * ║ Notas: Incluye validaciones específicas y manejo de contraseña temporal.   ║
+ * ╚════════════════════════════════════════════════════════════════════════════╝
+ */
+
 package usuarios;
 
 import seguridad.Encriptador;
-
 import java.util.ArrayList;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
  * ║                         CLASE CONCRETA: ESTUDIANTE                        ║
  * ║ Representa un estudiante registrado en el sistema.                        ║
- * ║ Hereda de Usuario e incluye organización laboral y temas de interés.     ║
+ * ║ Hereda de {@link Usuario} e incluye organización laboral y temas de interés.║
  * ╚════════════════════════════════════════════════════════════════════════════╝
+ *
+ * <p><b>Responsabilidades:</b></p>
+ * <ul>
+ *   <li>Autenticarse en el sistema.</li>
+ *   <li>Almacenar información personal y académica.</li>
+ *   <li>Validar organización laboral y temas de interés.</li>
+ *   <li>Manejar contraseñas temporales para recuperación de acceso.</li>
+ * </ul>
+ *
+ * <p><b>Ejemplo de uso:</b></p>
+ * <pre>{@code
+ * ArrayList<String> intereses = new ArrayList<>();
+ * intereses.add("Programación");
+ * intereses.add("Bases de Datos");
+ *
+ * Estudiante estudiante = new Estudiante(
+ *     "Lucía", "Gómez", "Ramírez",
+ *     "123456789", "88887777",
+ *     "lucia@tec.ac.cr", "San José, Costa Rica",
+ *     "ContrasenaSegura123!",
+ *     "TEC",
+ *     intereses
+ * );
+ * System.out.println(estudiante);
+ * }</pre>
+ *
+ * @author Lucía y Karla
+ * @version 1.0
+ * @since 1.0
  */
 public class Estudiante extends Usuario {
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                      ATRIBUTOS ESPECÍFICOS                         ║
     // ╚════════════════════════════════════════════════════════════════════╝
-
     private String organizacionLaboral;
     private ArrayList<String> temasInteres;
+    private String contrasenaTemporal;
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          CONSTRUCTOR                              ║
     // ╚════════════════════════════════════════════════════════════════════╝
 
+    /**
+     * Crea una nueva instancia de {@code Estudiante}.
+     *
+     * @param nombre Nombre del estudiante (2–20 caracteres).
+     * @param primerApellido Primer apellido (2–20 caracteres).
+     * @param segundoApellido Segundo apellido (2–20 caracteres).
+     * @param identificacionPersonal Identificación única (≥ 9 caracteres).
+     * @param numeroTelefono Teléfono (≥ 8 caracteres).
+     * @param correoElectronico Correo electrónico válido y único.
+     * @param direccionFisica Dirección física (5–60 caracteres).
+     * @param contrasenaPlano Contraseña en texto plano, será encriptada.
+     * @param organizacionLaboral Organización laboral (≤ 40 caracteres).
+     * @param temasInteres Lista de temas de interés (cada uno 5–30 caracteres).
+     * @throws IllegalArgumentException Si algún parámetro no cumple las reglas.
+     */
     public Estudiante(String nombre,
                       String primerApellido,
                       String segundoApellido,
@@ -49,6 +106,13 @@ public class Estudiante extends Usuario {
     // ║                    VALIDACIÓN ESPECÍFICA                          ║
     // ╚════════════════════════════════════════════════════════════════════╝
 
+    /**
+     * Valida los datos específicos de un estudiante.
+     *
+     * @param organizacion Organización laboral (≤ 40 caracteres).
+     * @param temas Lista de temas de interés (cada uno 5–30 caracteres).
+     * @throws IllegalArgumentException Si los datos no cumplen las reglas.
+     */
     private void validarDatosEstudiante(String organizacion, ArrayList<String> temas) {
         if (organizacion == null || organizacion.length() > 40)
             throw new IllegalArgumentException("❌ La organización no puede exceder los 40 caracteres.");
@@ -66,13 +130,8 @@ public class Estudiante extends Usuario {
     // ║                            GETTERS                                ║
     // ╚════════════════════════════════════════════════════════════════════╝
 
-    public String getOrganizacionLaboral() {
-        return organizacionLaboral;
-    }
-
-    public ArrayList<String> getTemasInteres() {
-        return temasInteres;
-    }
+    public String getOrganizacionLaboral() { return organizacionLaboral; }
+    public ArrayList<String> getTemasInteres() { return temasInteres; }
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                            SETTERS                                ║
@@ -92,25 +151,41 @@ public class Estudiante extends Usuario {
             if (tema.length() < 5 || tema.length() > 30)
                 throw new IllegalArgumentException("❌ Cada tema de interés debe tener entre 5 y 30 caracteres.");
         }
-
         this.temasInteres = temasInteres;
     }
 
-    private String contrasenaTemporal;
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                   CONTRASEÑA TEMPORAL                             ║
+    // ╚════════════════════════════════════════════════════════════════════╝
 
+    /**
+     * Establece una contraseña temporal encriptada.
+     *
+     * @param encriptada Contraseña temporal encriptada.
+     */
     public void setContrasenaTemporal(String encriptada) {
         this.contrasenaTemporal = encriptada;
     }
 
+    /**
+     * Verifica si la contraseña temporal ingresada coincide con la almacenada.
+     *
+     * @param ingresada Contraseña ingresada por el usuario.
+     * @return {@code true} si coincide, {@code false} en caso contrario.
+     */
     public boolean esContrasenaTemporalValida(String ingresada) {
         return Encriptador.verificar(ingresada, contrasenaTemporal);
     }
 
-
-    // ╔════════════════════════════════════════════════════════════════════╗
+// ╔════════════════════════════════════════════════════════════════════╗
     // ║                   REPRESENTACIÓN EN TEXTO                         ║
     // ╚════════════════════════════════════════════════════════════════════╝
 
+    /**
+     * Devuelve una representación textual del estudiante.
+     *
+     * @return Cadena con datos heredados y atributos específicos.
+     */
     @Override
     public String toString() {
         return super.toString() +

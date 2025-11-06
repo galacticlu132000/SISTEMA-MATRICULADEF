@@ -1,19 +1,61 @@
 package usuarios;
 
+/*
+ * ╔════════════════════════════════════════════════════════════════════════════╗
+ * ║                  SISTEMA DE MATRÍCULA Y CALIFICACIONES (TEC)               ║
+ * ║ Módulo: usuarios                                                           ║
+ * ║ Archivo: Usuario.java                                                      ║
+ * ║ Autoría: Lucía y Karla                                                     ║
+ * ║ Propósito: Clase abstracta base para estudiantes y profesores.             ║
+ * ║ Dependencias: seguridad.Encriptador                                        ║
+ * ║ Versión: 1.0                                                               ║
+ * ║ Última actualización: 2025-11-05                                           ║
+ * ║ Notas: Incluye validación de datos, encriptación y autenticación segura.   ║
+ * ╚════════════════════════════════════════════════════════════════════════════╝
+ */
+
 import seguridad.Encriptador;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
+
 /**
- * Clase abstracta que representa un usuario del sistema (estudiante o profesor).
- * Incluye validación de datos, encriptación de contraseña y lógica de autenticación.
+ * ╔════════════════════════════════════════════════════════════════════════════╗
+ * ║                           CLASE ABSTRACTA: USUARIO                         ║
+ * ║ Representa un usuario del sistema (estudiante o profesor).                 ║
+ * ║ Incluye validación de datos, encriptación de contraseña y autenticación.   ║
+ * ╚════════════════════════════════════════════════════════════════════════════╝
+ *
+ * <p><b>Responsabilidades:</b></p>
+ * <ul>
+ *   <li>Validar datos personales al crear usuarios.</li>
+ *   <li>Encriptar contraseñas y verificar autenticación.</li>
+ *   <li>Gestionar contraseñas temporales y cambios obligatorios.</li>
+ * </ul>
+ *
+ * <p><b>Ejemplo de uso:</b></p>
+ * <pre>{@code
+ * Estudiante estudiante = new Estudiante(
+ *     "Lucía", "Gómez", "Ramírez",
+ *     "123456789", "88887777",
+ *     "lucia@tec.ac.cr", "San José, Costa Rica",
+ *     "ContrasenaSegura123!",
+ *     "TEC",
+ *     new ArrayList<>(List.of("Programación", "Bases de Datos"))
+ * );
+ * boolean acceso = estudiante.autenticar("123456789", "ContrasenaSegura123!");
+ * System.out.println(acceso ? "Acceso permitido" : "Acceso denegado");
+ * }</pre>
+ *
+ * @author Lucía y Karla
+ * @version 1.0
+ * @since 1.0
  */
 public abstract class Usuario {
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║                  Atributos privados                ║
-    // ╚════════════════════════════════════════════════════╝
-
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          ATRIBUTOS PRIVADOS                        ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
@@ -25,10 +67,9 @@ public abstract class Usuario {
     private String contrasenaEncriptada;
     private boolean requiereCambioContrasena;
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║                    Constructor                     ║
-    // ╚════════════════════════════════════════════════════╝
-
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          CONSTRUCTOR                              ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     public Usuario(String nombre,
                    String primerApellido,
                    String segundoApellido,
@@ -53,10 +94,9 @@ public abstract class Usuario {
         this.requiereCambioContrasena = false;
     }
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║               Validación de atributos              ║
-    // ╚════════════════════════════════════════════════════╝
-
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          VALIDACIÓN                               ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     private void validarDatos(String nombre,
                               String apellido1,
                               String apellido2,
@@ -65,28 +105,20 @@ public abstract class Usuario {
                               String correo,
                               String direccion,
                               String contrasena) {
-
         if (nombre == null || nombre.length() < 2 || nombre.length() > 20)
             throw new IllegalArgumentException("❌ El nombre debe tener entre 2 y 20 caracteres.");
-
         if (apellido1 == null || apellido1.length() < 2 || apellido1.length() > 20)
             throw new IllegalArgumentException("❌ El primer apellido debe tener entre 2 y 20 caracteres.");
-
         if (apellido2 == null || apellido2.length() < 2 || apellido2.length() > 20)
             throw new IllegalArgumentException("❌ El segundo apellido debe tener entre 2 y 20 caracteres.");
-
         if (id == null || id.length() < 9)
             throw new IllegalArgumentException("❌ La identificación debe tener al menos 9 caracteres.");
-
         if (telefono == null || telefono.length() < 8)
             throw new IllegalArgumentException("❌ El número de teléfono debe tener al menos 8 caracteres.");
-
         if (correo == null || !Pattern.matches("^[^\\s@]{3,}@[^\\s@]{3,}$", correo))
             throw new IllegalArgumentException("❌ El correo electrónico no tiene un formato válido.");
-
         if (direccion == null || direccion.length() < 5 || direccion.length() > 60)
             throw new IllegalArgumentException("❌ La dirección debe tener entre 5 y 60 caracteres.");
-
         if (!esContrasenaSegura(contrasena))
             throw new IllegalArgumentException("❌ La contraseña no cumple con los requisitos de seguridad.");
     }
@@ -100,10 +132,9 @@ public abstract class Usuario {
                 contrasena.matches(".*[!@#$%^&*()_+=<>?].*");
     }
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║           Seguridad y autenticación                ║
-    // ╚════════════════════════════════════════════════════╝
-
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          AUTENTICACIÓN                            ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     public boolean autenticar(String idIngresado, String contrasenaPlano) {
         return this.identificacionPersonal.equals(idIngresado) &&
                 Encriptador.verificar(contrasenaPlano, this.contrasenaEncriptada);
@@ -135,99 +166,34 @@ public abstract class Usuario {
         return requiereCambioContrasena;
     }
 
-    // ╔════════════════════════════════════════════════════╗
-    // ║                  Getters públicos                  ║
-    // ╚════════════════════════════════════════════════════╝
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          GETTERS & SETTERS                         ║
+    // ╚════════════════════════════════════════════════════════════════════╝
+    public String getNombre() { return nombre; }
+    public String getPrimerApellido() { return primerApellido; }
+    public String getSegundoApellido() { return segundoApellido; }
+    public String getIdentificacionPersonal() { return identificacionPersonal; }
+    public String getNumeroTelefono() { return numeroTelefono; }
+    public String getCorreoElectronico() { return correoElectronico; }
+    public String getDireccionFisica() { return direccionFisica; }
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public String getContrasenaEncriptada() { return contrasenaEncriptada; }
+    public String getNombreCompleto() { return nombre + " " + primerApellido + " " + segundoApellido; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setPrimerApellido(String primerApellido) { this.primerApellido = primerApellido; }
+    public void setSegundoApellido(String segundoApellido) { this.segundoApellido = segundoApellido; }
 
-    public String getContrasenaEncriptada() {
-        return contrasenaEncriptada;
-    }
+    public void setNumeroTelefono(String numeroTelefono) { this.numeroTelefono = numeroTelefono; }
+    public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
+    public void setDireccionFisica(String direccionFisica) { this.direccionFisica = direccionFisica; }
+     public void setContrasenaEncriptada(String contrasenaEncriptada) { this.contrasenaEncriptada = contrasenaEncriptada; }
 
-    public String getPrimerApellido() {
-        return primerApellido;
-    }
-
-    public String getSegundoApellido() {
-        return segundoApellido;
-    }
-
-    public String getIdentificacionPersonal() {
-        return identificacionPersonal;
-    }
-
-    public String getNumeroTelefono() {
-        return numeroTelefono;
-    }
-
-    public String getCorreoElectronico() {
-        return correoElectronico;
-    }
-
-    public String getDireccionFisica() {
-        return direccionFisica;
-    }
-
-    public LocalDate getFechaRegistro() {
-        return fechaRegistro;
-    }
-
-    public String getNombreCompleto() {
-        return nombre + " " + primerApellido + " " + segundoApellido;
-    }
-
-    private String contrasenaTemporal;
-
-    public String getContrasenaTemporal() {
-        return contrasenaTemporal;
-    }
-
-    public void setContrasenaTemporal(String contrasenaTemporal) {
-        this.contrasenaTemporal = contrasenaTemporal;
-    }
-
-
-    // ╔════════════════════════════════════════════════════╗
-    // ║                  Setters públicos                  ║
-    // ╚════════════════════════════════════════════════════╝
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setPrimerApellido(String primerApellido) {
-        this.primerApellido = primerApellido;
-    }
-
-    public void setSegundoApellido(String segundoApellido) {
-        this.segundoApellido = segundoApellido;
-    }
-
-    public void setNumeroTelefono(String numeroTelefono) {
-        this.numeroTelefono = numeroTelefono;
-    }
-
-    public void setCorreoElectronico(String correoElectronico) {
-        this.correoElectronico = correoElectronico;
-    }
-
-    public void setDireccionFisica(String direccionFisica) {
-        this.direccionFisica = direccionFisica;
-    }
-
-    public void setContrasenaEncriptada(String contrasenaEncriptada) {
-        this.contrasenaEncriptada = contrasenaEncriptada;
-    }
-
-    // ╔════════════════════════════════════════════════════╗
-    // ║            Representación en texto                 ║
-    // ╚════════════════════════════════════════════════════╝
-
-    @Override
-    public String toString() {
-        return getNombreCompleto() + " [" + identificacionPersonal + "]";
-    }
-}
+        // ╔════════════════════════════════════════════════════════════════════╗
+        // ║                          REPRESENTACIÓN                            ║
+        // ╚════════════════════════════════════════════════════════════════════╝
+        @Override
+        public String toString() {
+            return getNombreCompleto() + " [" + identificacionPersonal + "]";
+        }
+        }
