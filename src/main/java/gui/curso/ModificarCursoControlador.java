@@ -175,14 +175,14 @@ private void inicializarComponentes() {
 }
 private void cargarDatosCurso() {
     txtID.setText(cursoOriginal.getIdentificacionCurso());
-    txtNombre.setText(cursoOriginal.getnombreCurso());
-    txtDescripcion.setText(cursoOriginal.getdescripcionCurso());
-    txtHoras.setText(String.valueOf(cursoOriginal.gethorasDia()));
-    txtMinEstudiantes.setText(String.valueOf(cursoOriginal.getcantidadMinimaE()));
-    txtMaxEstudiantes.setText(String.valueOf(cursoOriginal.getcantidadMaximaE()));
-    txtMinCalificacion.setText(String.valueOf(cursoOriginal.getcalificacionMinimaE()));
-    comboModalidad.setSelectedItem(cursoOriginal.getmodalidad().name());
-    comboTipoCurso.setSelectedItem(cursoOriginal.gettipoCurso().name());
+    txtNombre.setText(cursoOriginal.getNombreCurso());
+    txtDescripcion.setText(cursoOriginal.getDescripcionCurso());
+    txtHoras.setText(String.valueOf(cursoOriginal.getHorasDia()));
+    txtMinEstudiantes.setText(String.valueOf(cursoOriginal.getCantidadMinimaE()));
+    txtMaxEstudiantes.setText(String.valueOf(cursoOriginal.getCantidadMaximaE()));
+    txtMinCalificacion.setText(String.valueOf(cursoOriginal.getCalificacionMinimaE()));
+    comboModalidad.setSelectedItem(cursoOriginal.getModalidad().name());
+    comboTipoCurso.setSelectedItem(cursoOriginal.getTipoCurso().name());
 }
 private boolean validarCampos() {
     boolean nombreValido = txtNombre.getText().length() >= 5 && txtNombre.getText().length() <= 40;

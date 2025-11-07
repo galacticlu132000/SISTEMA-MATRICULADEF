@@ -23,7 +23,7 @@ public class Generadorpdf {
 
     public void agregarSeccionEstudiantes(Curso curso, GrupoCurso grupo, List<Estudiante> estudiantes) {
         try {
-            documento.add(new Paragraph("Curso: " + curso.getnombreCurso()));
+            documento.add(new Paragraph("Curso: " + curso.getNombreCurso()));
             documento.add(new Paragraph("Grupo: " + grupo.getIdGrupo()));
             documento.add(new Paragraph("Estudiantes matriculados:"));
 
@@ -47,7 +47,7 @@ public class Generadorpdf {
 
     public void agregarSeccionEstadistica(Curso curso, GrupoCurso grupo, int cantidadEstudiantes) {
         try {
-            documento.add(new Paragraph("Curso: " + curso.getnombreCurso()));
+            documento.add(new Paragraph("Curso: " + curso.getNombreCurso()));
             documento.add(new Paragraph("Grupo: " + grupo.getIdGrupo()));
             documento.add(new Paragraph("Cantidad de estudiantes matriculados: " + cantidadEstudiantes));
             documento.add(new Paragraph("\n"));

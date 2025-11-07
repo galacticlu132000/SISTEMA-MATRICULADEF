@@ -182,8 +182,8 @@ boolean registrado3=gestorCursos.registrarCursos(cursoPrueba);
 
     // 👥 Grupo
     GrupoCurso grupoPrueba = new GrupoCurso(1, LocalDate.of(2025, 11, 1), LocalDate.of(2025, 12, 15),cursoPrueba);
-    String idcurso= cursoPrueba.getIdentificacion();
-String idCurso=cursoPrueba.getIdentificacion();
+    String idcurso= cursoPrueba.getIdentificacionCurso();
+String idCurso=cursoPrueba.getIdentificacionCurso();
 GestorGruposCurso gestorGrupos=GestorGruposCurso.getInstancia();
 boolean grupo=gestorGrupos.agregarGrupo(idCurso,grupoPrueba);
 // 🔗 Asociación grupo–profesor
@@ -225,7 +225,7 @@ boolean grupoProfesor=gestorProfesores.asociarGrupo(profesorPrueba, grupoPrueba)
                 if (estudiante != null) {
                     String claveEncriptada = encriptar(clave);
 
-                    if (claveEncriptada.equals(estudiante.getContrasenaTemporal())) {
+                    if (claveEncriptada.equals(estudiante.getContrasenaEncriptada())) {
                         mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
                         SwingUtilities.getWindowAncestor(this).dispose();
                         abrirPanelCambioContrasena(estudiante);
@@ -246,7 +246,7 @@ boolean grupoProfesor=gestorProfesores.asociarGrupo(profesorPrueba, grupoPrueba)
                 if (profesor != null) {
                     String claveEncriptada = encriptar(clave);
 
-                    if (claveEncriptada.equals(profesor.getContrasenaTemporal())) {
+                    if (claveEncriptada.equals(profesor.getContrasenaEncriptada())) {
                         mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
                         SwingUtilities.getWindowAncestor(this).dispose();
                         abrirPanelCambioContrasena(profesor);

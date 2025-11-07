@@ -106,7 +106,7 @@ public class RegistroProfesorGrupoControlador extends JDialog {
             modeloTabla.addRow(new Object[]{
                     nombreProfesor,
                     grupo.getNombre(),
-                    grupo.getCurso().getnombreCurso()
+                    grupo.getCurso().getNombreCurso()
             });
             JOptionPane.showMessageDialog(this, "✅ Grupo asociado correctamente.");
         } else {

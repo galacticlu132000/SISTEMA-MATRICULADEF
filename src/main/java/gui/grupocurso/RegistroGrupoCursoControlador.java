@@ -140,7 +140,7 @@ public class RegistroGrupoCursoControlador extends JDialog {
         for (GrupoCurso grupo : gestorGruposCurso.listarGrupos(curso.getIdentificacionCurso())) {
             modeloTabla.addRow(new Object[]{
                     grupo.getIdGrupo(),
-                    grupo.getCurso().getnombreCurso(),
+                    grupo.getCurso().getNombreCurso(),
                     grupo.getFechaInicio(),
                     grupo.getFechaFin()
             });

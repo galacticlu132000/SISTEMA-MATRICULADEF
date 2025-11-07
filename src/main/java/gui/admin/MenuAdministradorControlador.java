@@ -293,14 +293,14 @@ public class MenuAdministradorControlador extends JFrame {
         for (Curso c : gestorCursos.listarCursos()) {
             modeloTabla.addRow(new Object[]{
                     c.getIdentificacionCurso(),
-                    c.getnombreCurso(),
-                    c.getdescripcionCurso(),
-                    c.gethorasDia(),
-                    c.getcantidadMinimaE(),
-                    c.getcantidadMaximaE(),
-                    c.getcalificacionMinimaE(),
-                    c.getmodalidad().toString().replace("_", " "), // para legibilidad
-                    c.gettipoCurso().toString()
+                    c.getNombreCurso(),
+                    c.getDescripcionCurso(),
+                    c.getHorasDia(),
+                    c.getCantidadMinimaE(),
+                    c.getCantidadMaximaE(),
+                    c.getCalificacionMinimaE(),
+                    c.getModalidad().toString().replace("_", " "), // para legibilidad
+                    c.getTipoCurso().toString()
             });
         }
     }
