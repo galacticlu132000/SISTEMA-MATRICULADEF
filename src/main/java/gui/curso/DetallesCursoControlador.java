@@ -71,14 +71,14 @@ public class DetallesCursoControlador extends JDialog {
     // ╚════════════════════════════════════════════════════════════╝
     public void inicializarConCurso(Curso curso) {
         lblID.setText(curso.getIdentificacionCurso());
-        lblNombre.setText(curso.getnombreCurso());
-        lblDescripcion.setText(curso.getdescripcionCurso());
-        lblHoras.setText(String.valueOf(curso.gethorasDia()));
-        lblMinEstudiantes.setText(String.valueOf(curso.getcantidadMinimaE()));
-        lblMaxEstudiantes.setText(String.valueOf(curso.getcantidadMaximaE()));
-        lblMinCalificacion.setText(String.valueOf(curso.getcalificacionMinimaE()));
-        lblModalidad.setText(curso.getmodalidad().toString());
-        lblTipoCurso.setText(curso.gettipoCurso().toString());
+        lblNombre.setText(curso.getNombreCurso());
+        lblDescripcion.setText(curso.getDescripcionCurso());
+        lblHoras.setText(String.valueOf(curso.getHorasDia()));
+        lblMinEstudiantes.setText(String.valueOf(curso.getCantidadMinimaE()));
+        lblMaxEstudiantes.setText(String.valueOf(curso.getCantidadMaximaE()));
+        lblMinCalificacion.setText(String.valueOf(curso.getCalificacionMinimaE()));
+        lblModalidad.setText(curso.getModalidad().toString());
+        lblTipoCurso.setText(curso.getTipoCurso().toString());
     }
 
     // ╔════════════════════════════════════════════════════════════╗

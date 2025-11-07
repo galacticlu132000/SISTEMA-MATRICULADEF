@@ -74,16 +74,16 @@ public class MenuCursoControlador extends JFrame {
     // ╚════════════════════════════════════════════════════════════╝
     private void cargarDatosCurso() {
         if (cursoActivo != null) {
-            tituloCurso.setText(cursoActivo.getnombreCurso());
+            tituloCurso.setText(cursoActivo.getNombreCurso());
             labelID.setText(cursoActivo.getIdentificacionCurso());
-            labelNombre.setText(cursoActivo.getnombreCurso());
-            labelDescripcion.setText(cursoActivo.getdescripcionCurso());
-            labelHoras.setText(String.valueOf(cursoActivo.gethorasDia()));
-            labelMinEstudiantes.setText(String.valueOf(cursoActivo.getcantidadMinimaE()));
-            labelMaxEstudiantes.setText(String.valueOf(cursoActivo.getcantidadMaximaE()));
-            labelMinCalificacion.setText(String.valueOf(cursoActivo.getcalificacionMinimaE()));
-            labelModalidad.setText(cursoActivo.getmodalidad().toString());
-            labelTipoCurso.setText(cursoActivo.gettipoCurso().toString());
+            labelNombre.setText(cursoActivo.getNombreCurso());
+            labelDescripcion.setText(cursoActivo.getDescripcionCurso());
+            labelHoras.setText(String.valueOf(cursoActivo.getHorasDia()));
+            labelMinEstudiantes.setText(String.valueOf(cursoActivo.getCantidadMinimaE()));
+            labelMaxEstudiantes.setText(String.valueOf(cursoActivo.getCantidadMaximaE()));
+            labelMinCalificacion.setText(String.valueOf(cursoActivo.getCalificacionMinimaE()));
+            labelModalidad.setText(cursoActivo.getModalidad().toString());
+            labelTipoCurso.setText(cursoActivo.getTipoCurso().toString());
         }
     }
 
