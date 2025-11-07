@@ -1,12 +1,9 @@
 package gui.evaluaciones;
 
-import gui.evaluaciones.PanelSeleccionUnica;
 import evaluacion.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import gui.evaluaciones.PanelSeleccionUnica;
-import gui.evaluaciones.PanelSeleccionMultiple;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
@@ -19,12 +16,6 @@ import gui.evaluaciones.PanelSeleccionMultiple;
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
 
-
-import evaluacion.*;
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-
 public class RegistroPreguntaControlador extends JDialog {
 
     private JComboBox<String> selectorTipo;
@@ -36,7 +27,7 @@ public class RegistroPreguntaControlador extends JDialog {
     private final int numeroPregunta;
     private final List<Pregunta> listaPreguntas;
 
-    public RegistroPreguntaControlador(JFrame padre, int numeroPregunta, List<Pregunta> listaPreguntas) {
+    public RegistroPreguntaControlador(RegistroEvaluacionControlador padre, int numeroPregunta, List<Pregunta> listaPreguntas) {
         super(padre, "➕ Agregar Pregunta #" + numeroPregunta, true);
         this.numeroPregunta = numeroPregunta;
         this.listaPreguntas = listaPreguntas;

@@ -1,10 +1,59 @@
+/*
+ * ╔════════════════════════════════════════════════════════════════════════════╗
+ * ║                  SISTEMA DE MATRÍCULA Y CALIFICACIONES (TEC)               ║
+ * ║ Módulo: usuarios                                                           ║
+ * ║ Archivo: Curso.java                                                        ║
+ * ║ Autoría: Lucía y Karla                                                     ║
+ * ║ Propósito: Representa un curso con sus atributos, validaciones y grupos.   ║
+ * ║ Dependencias: GrupoCurso.java                                              ║
+ * ║ Versión: 1.0                                                               ║
+ * ║ Última actualización: 2025-11-05                                           ║
+ * ║ Notas: Incluye validaciones estrictas según especificación del proyecto.   ║
+ * ╚════════════════════════════════════════════════════════════════════════════╝
+ */
+
 package usuarios;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ╔════════════════════════════════════════════════════════════════════════════╗
+ * ║                               CLASE: CURSO                                 ║
+ * ║ Representa un curso académico con identificación, nombre, descripción,     ║
+ * ║ modalidad, tipo, cantidad de estudiantes y grupos asociados.               ║
+ * ╚════════════════════════════════════════════════════════════════════════════╝
+ *
+ * <p><b>Responsabilidades:</b></p>
+ * <ul>
+ *   <li>Validar atributos del curso según reglas establecidas.</li>
+ *   <li>Gestionar grupos asociados al curso.</li>
+ *   <li>Proveer representación textual clara.</li>
+ * </ul>
+ *
+ * <p><b>Ejemplo de uso:</b></p>
+ * <pre>{@code
+ * Curso curso = new Curso(
+ *     "INF001",
+ *     "Programación Orientada a Objetos",
+ *     "Curso introductorio sobre POO en Java",
+ *     4, 3, 20, 70,
+ *     Curso.Modalidad.PRESENCIAL,
+ *     Curso.Tipo_Curso.TEORICO
+ * );
+ * curso.agregarGrupo(new GrupoCurso(1));
+ * System.out.println(curso);
+ * }</pre>
+ *
+ * @author Lucía y Karla
+ * @version 1.0
+ * @since 1.0
+ */
 public class Curso {
+
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          ATRIBUTOS                                 ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     private String identificacionCurso;
     private String nombreCurso;
     private String descripcionCurso;
@@ -14,24 +63,44 @@ public class Curso {
     private int calificacionMinimaE;
     private Modalidad modalidad;
     private Tipo_Curso tipo_Curso;
+    private List<GrupoCurso> grupos = new ArrayList<>();
 
-
-    public enum Modalidad{
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          ENUMERACIONES                             ║
+    // ╚════════════════════════════════════════════════════════════════════╝
+    public enum Modalidad {
         PRESENCIAL,
         VIRTUAL_SINCRONICA,
         VIRTUAL_ASINCRONICA,
         VIRTUAL_HIBRIDA,
         SEMIPRESENCIAL
-
     }
 
-    public enum Tipo_Curso{
+    public enum Tipo_Curso {
         TEORICO,
         PRACTICO,
         TALLER,
         SEMINARIO
     }
 
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          CONSTRUCTOR                              ║
+    // ╚════════════════════════════════════════════════════════════════════╝
+
+    /**
+     * Crea una nueva instancia de {@code Curso} validando todos sus atributos.
+     *
+     * @param identificacionCurso Identificación única (exactamente 6 caracteres).
+     * @param nombreCurso Nombre del curso (5–40 caracteres).
+     * @param descripcionCurso Descripción (5–400 caracteres).
+     * @param horasDia Cantidad de horas por día (1–8).
+     * @param cantidadMinimaE Cantidad mínima de estudiantes (1–5).
+     * @param cantidadMaximaE Cantidad máxima de estudiantes (≥ mínima y ≤ 20).
+     * @param calificacionMinimaE Calificación mínima para aprobar (0–100).
+     * @param modalidad Modalidad del curso.
+     * @param tipo_Curso Tipo de curso.
+     * @throws IllegalArgumentException Si algún parámetro no cumple las reglas.
+     */
     public Curso(String identificacionCurso,
                  String nombreCurso,
                  String descripcionCurso,
@@ -75,110 +144,74 @@ public class Curso {
         this.tipo_Curso = tipo_Curso;
     }
 
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          GETTERS & SETTERS                         ║
+    // ╚════════════════════════════════════════════════════════════════════╝
 
+    public String getIdentificacionCurso() { return identificacionCurso; }
+    public void setIdentificacionCurso(String identificacionCurso) { this.identificacionCurso = identificacionCurso; }
 
-    public void setIdentificacionCurso( String identificacionCurso){
-        this.identificacionCurso= identificacionCurso;
-    }
-    public String getIdentificacionCurso() {
-        return identificacionCurso;
-    }
+    public String getNombreCurso() { return nombreCurso; }
+    public void setNombreCurso(String nombreCurso) { this.nombreCurso = nombreCurso; }
 
+    public String getDescripcionCurso() { return descripcionCurso; }
+    public void setDescripcionCurso(String descripcionCurso) { this.descripcionCurso = descripcionCurso; }
 
-    public void setNombreCurso(String nombreCurso){
-        this.nombreCurso= nombreCurso;}
-    public String getnombreCurso() {
-        return nombreCurso;
-    }
+    public int getHorasDia() { return horasDia; }
+    public void setHorasDia(int horasDia) { this.horasDia = horasDia; }
 
+    public int getCantidadMinimaE() { return cantidadMinimaE; }
+    public void setCantidadMinimaE(int cantidadMinimaE) { this.cantidadMinimaE = cantidadMinimaE; }
 
+    public int getCantidadMaximaE() { return cantidadMaximaE; }
+    public void setCantidadMaximaE(int cantidadMaximaE) { this.cantidadMaximaE = cantidadMaximaE; }
 
-    public void setDescripcionCurso(String descripcionCurso){
-        this.descripcionCurso= descripcionCurso;
-    }
-    public String getdescripcionCurso() {
-        return descripcionCurso;
-    }
+    public int getCalificacionMinimaE() { return calificacionMinimaE; }
+    public void setCalificacionMinimaE(int calificacionMinimaE) { this.calificacionMinimaE = calificacionMinimaE; }
 
+    public Modalidad getModalidad() { return modalidad; }
+    public void setModalidad(Modalidad modalidad) { this.modalidad = modalidad; }
 
+    public Tipo_Curso getTipoCurso() { return tipo_Curso; }
+    public void setTipoCurso(Tipo_Curso tipoCurso) { this.tipo_Curso = tipoCurso; }
 
-    public void setHorasDia(int horasDia){
-        this.horasDia= horasDia;
-    }
-    public int gethorasDia(){
-        return horasDia;
-    }
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          GESTIÓN DE GRUPOS                         ║
+    // ╚════════════════════════════════════════════════════════════════════╝
 
+    /**
+     * Devuelve la lista de grupos asociados al curso.
+     *
+     * @return Lista de {@code GrupoCurso}.
+     */
+    public List<GrupoCurso> getGrupos() { return grupos; }
 
-    public void setCantidadMinimaE(int cantidadMinimaE){
-        this.cantidadMinimaE= cantidadMinimaE;
-    }
-    public int getcantidadMinimaE(){
-        return cantidadMinimaE;
-    }
+    /**
+     * Agrega un nuevo grupo al curso.
+     *
+     * @param grupo Grupo a agregar.
+     */
+    public void agregarGrupo(GrupoCurso grupo) { grupos.add(grupo); }
 
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                          REPRESENTACIÓN                            ║
+    // ╚════════════════════════════════════════════════════════════════════╝
 
-    public void setCantidadMaximaE(int cantidadMaximaE){
-        this.cantidadMaximaE= cantidadMaximaE;
-    }
-    public int getcantidadMaximaE() {
-        return cantidadMaximaE;
-    }
-    public void setCalificacionMinimaE(int calificacionMinimaE){
-        this.calificacionMinimaE= calificacionMinimaE;
-    }
-
-    public int getcalificacionMinimaE(){
-        return calificacionMinimaE;
-    }
-
-    public void setModalidad(Modalidad modalidad) {
-        this.modalidad = modalidad;
-    }
-    public Modalidad getmodalidad() {
-        return modalidad;
-    }
-    public void setTipoCurso(Tipo_Curso tipoCurso) {
-        this.tipo_Curso = tipoCurso;
-    }
-    public Tipo_Curso gettipoCurso() {
-        return tipo_Curso;
-    }
-
-    public String getIdentificacion() {
-        return this.identificacionCurso;
-    }
-
-
-
-
-    private List<GrupoCurso> grupos = new ArrayList<>();
-
-
-    public List<GrupoCurso> getGrupos() {
-        return grupos;
-    }
-
-
-
-
-    public void agregarGrupo(GrupoCurso grupo) {
-        grupos.add(grupo);
-    }
-
-
-
-
-
+    /**
+     * Devuelve una representación textual del curso con todos sus atributos.
+     *
+     * @return Cadena con nombre, identificación, descripción, horas, cantidades,
+     *         calificación mínima, modalidad y tipo.
+     */
     @Override
     public String toString() {
         return "Curso: " + nombreCurso +
                 " | Identificación: " + identificacionCurso +
                 " | Descripción: " + descripcionCurso +
-                " | Cantidad de horas por día: " + horasDia +
-                " | Cantidad mínima de estudiantes: " + cantidadMinimaE +
-                " | Cantidad máxima de estudiantes: " + cantidadMaximaE +
-                " | Calificación mínima para aprobar: " + calificacionMinimaE +
+                " | Horas por día: " + horasDia +
+                " | Mínimo estudiantes: " + cantidadMinimaE +
+                " | Máximo estudiantes: " + cantidadMaximaE +
+                " | Calificación mínima: " + calificacionMinimaE +
                 " | Modalidad: " + modalidad +
                 " | Tipo: " + tipo_Curso;
     }

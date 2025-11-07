@@ -19,7 +19,7 @@ import java.util.List;
  * ║ - Subpanel para agregar preguntas dinámicamente                           ║
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
-public class RegistroEvaluacionControlador extends JFrame {
+public class RegistroEvaluacionControlador extends JDialog {
 
     private JTextField campoNombre;
     private JTextArea campoInstrucciones;
@@ -36,14 +36,15 @@ public class RegistroEvaluacionControlador extends JFrame {
     private List<Pregunta> preguntas = new ArrayList<>();
     private final Profesor profesorActual;
 
-    public RegistroEvaluacionControlador(JFrame padre,Profesor profesorActual) {
-        this.profesorActual = profesorActual ;
-        setTitle("➕ Crear Evaluación");
+    public RegistroEvaluacionControlador(JFrame padre, Profesor profesorActual) {
+        super(padre, "➕ Crear Evaluación", true); // 👈 true = modal
+        this.profesorActual = profesorActual;
         setSize(700, 600);
         setLocationRelativeTo(padre);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         inicializarComponentes();
     }
+
 
     private void inicializarComponentes() {
         JPanel panel = new JPanel(new BorderLayout());
