@@ -176,18 +176,56 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
     // 📚 Curso
     Curso cursoPrueba = new Curso(
             "TEC001", "Programación OO", "Curso de objetos y clases",
-            4, 2, 3, 20,PRESENCIAL,TEORICO
+            4, 2, 3, 20, PRESENCIAL, TEORICO
     );
-boolean registrado3=gestorCursos.registrarCursos(cursoPrueba);
+    boolean registrado3 = gestorCursos.registrarCursos(cursoPrueba);
 
-    // 👥 Grupo
-    GrupoCurso grupoPrueba = new GrupoCurso(1, LocalDate.of(2025, 11, 1), LocalDate.of(2025, 12, 15),cursoPrueba);
-    String idcurso= cursoPrueba.getIdentificacionCurso();
-String idCurso=cursoPrueba.getIdentificacionCurso();
-GestorGruposCurso gestorGrupos=GestorGruposCurso.getInstancia();
-boolean grupo=gestorGrupos.agregarGrupo(idCurso,grupoPrueba);
-// 🔗 Asociación grupo–profesor
-boolean grupoProfesor=gestorProfesores.asociarGrupo(profesorPrueba, grupoPrueba);
+    // 👥 Grupo 1
+    GrupoCurso grupoPrueba = new GrupoCurso(1, LocalDate.of(2025, 11, 1), LocalDate.of(2025, 12, 15), cursoPrueba);
+    String idCurso = cursoPrueba.getIdentificacionCurso();
+    GestorGruposCurso gestorGrupos = GestorGruposCurso.getInstancia();
+    boolean grupo = gestorGrupos.agregarGrupo(idCurso, grupoPrueba);
+    // 🔗 Asociación grupo–profesor
+    boolean grupoProfesor = gestorProfesores.asociarGrupo(profesorPrueba, grupoPrueba);
+
+    // 👥 Grupo 2
+    GrupoCurso grupo2 = new GrupoCurso(2, LocalDate.of(2025, 11, 2), LocalDate.of(2025, 12, 16), cursoPrueba);
+    boolean grupo2Registrado = gestorGrupos.agregarGrupo(idCurso, grupo2);
+    boolean grupo2Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo2);
+
+    // 👥 Grupo 3
+    GrupoCurso grupo3 = new GrupoCurso(3, LocalDate.of(2025, 11, 3), LocalDate.of(2025, 12, 17), cursoPrueba);
+    boolean grupo3Registrado = gestorGrupos.agregarGrupo(idCurso, grupo3);
+    boolean grupo3Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo3);
+
+    // 📚 Curso adicional
+    Curso cursoExtra = new Curso(
+            "TEC002", "Estructuras de Datos", "Curso sobre listas, pilas, colas y árboles",
+            4, 2, 3, 25, PRESENCIAL, TEORICO
+    );
+    boolean registradoExtra = gestorCursos.registrarCursos(cursoExtra);
+
+    // 👥 Grupo 1 del curso extra
+    GrupoCurso grupo4 = new GrupoCurso(1, LocalDate.of(2025, 11, 4), LocalDate.of(2025, 12, 18), cursoExtra);
+    String idCursoExtra = cursoExtra.getIdentificacionCurso();
+    boolean grupo4Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo4);
+    boolean grupo4Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo4);
+
+    // 👥 Grupo 2 del curso extra
+    GrupoCurso grupo5 = new GrupoCurso(2, LocalDate.of(2025, 11, 5), LocalDate.of(2025, 12, 19), cursoExtra);
+    boolean grupo5Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo5);
+    boolean grupo5Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo5);
+
+    // 👥 Grupo 3 del curso extra
+    GrupoCurso grupo6 = new GrupoCurso(3, LocalDate.of(2025, 11, 6), LocalDate.of(2025, 12, 20), cursoExtra);
+    boolean grupo6Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo6);
+    boolean grupo6Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo6);
+
+    // 👥 Grupo 4 del curso extra
+    GrupoCurso grupo7 = new GrupoCurso(4, LocalDate.of(2025, 11, 7), LocalDate.of(2025, 12, 21), cursoExtra);
+    boolean grupo7Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo7);
+    boolean grupo7Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo7);
+
 
     // 📝 Evaluación
     List<String> objetivos = List.of("Aplicar principios de POO", "Diseñar clases con herencia");

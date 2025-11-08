@@ -1,8 +1,9 @@
 package gui.estudiante;
+import control.GestorGruposCurso;
 import usuarios.Estudiante;
 import utilidades.correo.GestorCorreos;
 import utilidades.correo.RegistroCorreo;
-
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
@@ -42,6 +43,7 @@ public class MenuEstudianteControlador extends JFrame {
     // ║              INICIALIZACIÓN DE COMPONENTES                ║
     // ╚════════════════════════════════════════════════════════════╝
     private void inicializarComponentes() {
+        setLayout(new BorderLayout());
         JPanel panel = new JPanel(new GridLayout(8, 2, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
         JButton botonVerCorreos = new JButton("📬 Ver correos recibidos");
@@ -69,7 +71,52 @@ public class MenuEstudianteControlador extends JFrame {
             scroll.setPreferredSize(new Dimension(450, 300));
 
             JOptionPane.showMessageDialog(null, scroll, "📬 Historial de correos", JOptionPane.PLAIN_MESSAGE);
+        }
+
+        );
+        // Botón: Matricular curso
+        JButton botonMatricularCurso = new JButton("📘 Matricular Curso");
+        botonMatricularCurso.setBackground(new Color(220, 255, 220));
+        botonMatricularCurso.setForeground(new Color(30, 100, 60));
+        botonMatricularCurso.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        botonMatricularCurso.setFocusPainted(false);
+        botonMatricularCurso.addActionListener(e -> {
+            VentanaMatricula ventana = new VentanaMatricula(estudianteActivo);
+            ventana.setVisible(true);
         });
+
+        // 📖 Botón: Ver cursos matriculados
+        JButton botonVerMatriculas = new JButton("📖 Ver cursos matriculados");
+        botonVerMatriculas.setBackground(new Color(255, 245, 220));
+        botonVerMatriculas.setForeground(new Color(100, 60, 20));
+        botonVerMatriculas.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        botonVerMatriculas.setFocusPainted(false);
+
+// 🔹
+        botonVerMatriculas.addActionListener(e -> {
+            List<String> cursosMatriculados = GestorGruposCurso.getInstancia()
+                    .obtenerCursosMatriculados(estudianteActivo.getIdentificacionPersonal());
+
+            JTextArea area = new JTextArea();
+            area.setEditable(false);
+            area.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            area.setBackground(new Color(255, 255, 255));
+            area.setForeground(new Color(50, 50, 50));
+
+            if (cursosMatriculados == null || cursosMatriculados.isEmpty()) {
+                area.setText("⚠️ No estás matriculado en ningún curso.");
+            } else {
+                for (String curso : cursosMatriculados) {
+                    area.append("📘 " + curso + "\n");
+                }
+            }
+
+            JScrollPane scroll = new JScrollPane(area);
+            scroll.setPreferredSize(new Dimension(450, 250));
+
+            JOptionPane.showMessageDialog(null, scroll, "📖 Cursos matriculados", JOptionPane.PLAIN_MESSAGE);
+        });
+
 
 
         tituloBienvenida   = new JLabel();
@@ -90,11 +137,14 @@ public class MenuEstudianteControlador extends JFrame {
         panel.add(new JLabel("🏢 Organización:"));     panel.add(labelOrganizacion);
         panel.add(new JLabel("📚 Temas de interés:")); panel.add(labelTemas);
 
-        add(panel);
-        JPanel panelBoton = new JPanel();
+        add(panel, BorderLayout.CENTER);
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         panelBoton.setBackground(new Color(240, 240, 255));
         panelBoton.add(botonVerCorreos);
+        panelBoton.add(botonMatricularCurso);
+        panelBoton.add(botonVerMatriculas);
         add(panelBoton, BorderLayout.SOUTH);
+
 
     }
 

@@ -16,7 +16,9 @@ package usuarios;
 
 import seguridad.Encriptador;
 import java.util.ArrayList;
+import java.util.List;
 
+import usuarios.GrupoCurso;
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
  * ║                         CLASE CONCRETA: ESTUDIANTE                        ║
@@ -61,6 +63,7 @@ public class Estudiante extends Usuario {
     private String organizacionLaboral;
     private ArrayList<String> temasInteres;
     private String contrasenaTemporal;
+    private List<GrupoCurso> gruposMatriculados = new ArrayList<>();
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          CONSTRUCTOR                              ║
@@ -176,6 +179,45 @@ public class Estudiante extends Usuario {
     public boolean esContrasenaTemporalValida(String ingresada) {
         return Encriptador.verificar(ingresada, contrasenaTemporal);
     }
+
+
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║                   MATRÍCULA EN GRUPOS                             ║
+    // ╚════════════════════════════════════════════════════════════════════╝
+
+    /**
+     * Matricula al estudiante en un grupo de curso.
+     *
+     * @param grupo GrupoCurso al que se desea matricular.
+     * @return true si la matrícula fue exitosa, false si ya estaba matriculado.
+     */
+
+    public boolean matricularEnGrupo(GrupoCurso grupo) {
+        if (gruposMatriculados.contains(grupo)) {
+            System.out.println("⚠️ Ya estás matriculado en este grupo.");
+            return false;
+        }
+        gruposMatriculados.add(grupo);
+        System.out.println("✅ Matrícula registrada en grupo: " + grupo.getNombre());
+        return true;
+    }
+
+    /**
+     * Verifica si el estudiante ya está matriculado en un grupo específico.
+     *
+     * @param idCurso ID del curso.
+     * @param idGrupo Número de grupo.
+     * @return true si está matriculado, false si no.
+     */
+    public boolean estaMatriculadoEn(String idCurso, int idGrupo) {
+        for (GrupoCurso g : gruposMatriculados) {
+            if (g.getCurso().getIdentificacionCurso().equals(idCurso) && g.getIdGrupo() == idGrupo) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 // ╔════════════════════════════════════════════════════════════════════╗
     // ║                   REPRESENTACIÓN EN TEXTO                         ║

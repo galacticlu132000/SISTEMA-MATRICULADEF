@@ -2,6 +2,7 @@ package control;
 
 import java.util.*;
 import usuarios.GrupoCurso;
+import usuarios.Estudiante;
 
 public class GestorGruposCurso {
     private static final GestorGruposCurso instancia = new GestorGruposCurso();
@@ -18,6 +19,10 @@ public class GestorGruposCurso {
         System.out.println("✅ Grupo agregado al curso " + idCurso + ": " + grupo);
         return false;
     }
+    public List<GrupoCurso> getGruposPorCurso(String idCurso) {
+        return gruposPorCurso.getOrDefault(idCurso, new ArrayList<>());
+    }
+
 
     public List<GrupoCurso> listarGrupos(String idCurso) {
         return gruposPorCurso.getOrDefault(idCurso, new ArrayList<>());
@@ -70,6 +75,71 @@ public class GestorGruposCurso {
         }
         return null;
     }
+
+
+
+
+
+    public boolean matricularEstudiante(String idCurso, int idGrupo, String idEstudiante) {
+        // Buscar el grupo
+        List<GrupoCurso> grupos = gruposPorCurso.get(idCurso);
+        if (grupos == null) {
+            System.out.println("❌ No hay grupos registrados para el curso " + idCurso);
+            return false;
+        }
+
+        GrupoCurso grupo = null;
+        for (GrupoCurso g : grupos) {
+            if (g.getIdGrupo() == idGrupo) {
+                grupo = g;
+                break;
+            }
+        }
+
+        if (grupo == null) {
+            System.out.println("❌ No se encontró el grupo " + idGrupo + " en el curso " + idCurso);
+            return false;
+        }
+
+        // Buscar el estudiante
+        Estudiante estudiante = GestorEstudiantes.getInstancia().consultarEstudiante(idEstudiante);
+        if (estudiante == null) {
+            System.out.println("❌ Estudiante no encontrado con ID: " + idEstudiante);
+            return false;
+        }
+
+        // Validar si ya está matriculado
+        if (estudiante.estaMatriculadoEn(idCurso, idGrupo)) {
+            System.out.println("⚠️ El estudiante ya está matriculado en este grupo.");
+            return false;
+        }
+
+        // Agregar al grupo y al estudiante
+        grupo.agregarEstudiante(estudiante); // esto también actualiza al estudiante
+        return true;
+    }
+
+    public List<String> obtenerCursosMatriculados(String idEstudiante) {
+        List<String> cursos = new ArrayList<>();
+
+        for (Map.Entry<String, List<GrupoCurso>> entry : gruposPorCurso.entrySet()) {
+            for (GrupoCurso grupo : entry.getValue()) {
+                if (grupo.getEstudiantesMatriculados().contains(idEstudiante)) {
+                    String nombreCurso = grupo.getCurso().getIdentificacionCurso() + " - " + grupo.getCurso().getNombreCurso();
+                    if (!cursos.contains(nombreCurso)) {
+                        cursos.add(nombreCurso);
+                    }
+                }
+            }
+        }
+
+        return cursos;
+    }
+
+
+
+
+
 
     public void imprimirGrupos(String idCurso) {
         List<GrupoCurso> grupos = listarGrupos(idCurso);

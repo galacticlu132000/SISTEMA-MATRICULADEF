@@ -55,6 +55,7 @@ public class GrupoCurso {
     private Curso curso; // Composición: referencia al curso
     private List<Estudiante> estudiantes;
 
+
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          CONSTRUCTOR                              ║
     // ╚════════════════════════════════════════════════════════════════════╝
@@ -117,11 +118,47 @@ public class GrupoCurso {
      * @throws IllegalStateException Si el grupo ya alcanzó la capacidad máxima.
      */
     public void agregarEstudiante(Estudiante estudiante) {
+        if (estudiantes.contains(estudiante)) {
+            System.out.println("⚠️ El estudiante ya está en este grupo.");
+            return;
+        }
+
         if (estudiantes.size() >= curso.getCantidadMaximaE()) {
             throw new IllegalStateException("❌ El grupo ya alcanzó la capacidad máxima de estudiantes.");
         }
+
         estudiantes.add(estudiante);
+
+        // 🔁 Matrícula bidireccional: también actualiza al estudiante
+        if (!estudiante.estaMatriculadoEn(curso.getIdentificacionCurso(), idGrupo)) {
+            estudiante.matricularEnGrupo(this);
+        }
+
+        System.out.println("✅ Estudiante agregado al grupo: " + estudiante.getNombre());
     }
+
+    public boolean eliminarEstudiante(Estudiante estudiante) {
+        return estudiantes.remove(estudiante);
+    }
+    public boolean contieneEstudiante(String idEstudiante) {
+        return estudiantes.stream()
+                .anyMatch(e -> e.getIdentificacionPersonal().equals(idEstudiante));
+    }
+    /**
+     * Devuelve una lista con los IDs de los estudiantes matriculados.
+     *
+     * @return Lista de identificaciones personales.
+     */
+    public List<String> getEstudiantesMatriculados() {
+        List<String> ids = new ArrayList<>();
+        for (Estudiante estudiante : estudiantes) {
+            ids.add(estudiante.getIdentificacionPersonal());
+        }
+        return ids;
+    }
+
+
+
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          REPRESENTACIÓN                            ║
