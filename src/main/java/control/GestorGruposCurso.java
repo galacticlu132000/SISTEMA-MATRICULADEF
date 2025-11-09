@@ -1,6 +1,8 @@
 package control;
 
 import java.util.*;
+
+import usuarios.Curso;
 import usuarios.GrupoCurso;
 import usuarios.Estudiante;
 
@@ -118,16 +120,26 @@ public class GestorGruposCurso {
         grupo.agregarEstudiante(estudiante); // esto también actualiza al estudiante
         return true;
     }
+    public GrupoCurso getGrupoPorId(String idCurso, int idGrupo) {
+        List<GrupoCurso> grupos = getGruposPorCurso(idCurso);
+        for (GrupoCurso grupo : grupos) {
+            if (grupo.getIdGrupo() == idGrupo) {
+                return grupo;
+            }
+        }
+        return null;
+    }
 
-    public List<String> obtenerCursosMatriculados(String idEstudiante) {
-        List<String> cursos = new ArrayList<>();
 
-        for (Map.Entry<String, List<GrupoCurso>> entry : gruposPorCurso.entrySet()) {
-            for (GrupoCurso grupo : entry.getValue()) {
+    public List<Curso> obtenerCursosMatriculados(String idEstudiante) {
+        List<Curso> cursos = new ArrayList<>();
+
+        for (List<GrupoCurso> grupos : gruposPorCurso.values()) {
+            for (GrupoCurso grupo : grupos) {
                 if (grupo.getEstudiantesMatriculados().contains(idEstudiante)) {
-                    String nombreCurso = grupo.getCurso().getIdentificacionCurso() + " - " + grupo.getCurso().getNombreCurso();
-                    if (!cursos.contains(nombreCurso)) {
-                        cursos.add(nombreCurso);
+                    Curso curso = grupo.getCurso();
+                    if (!cursos.contains(curso)) {
+                        cursos.add(curso);
                     }
                 }
             }
@@ -135,6 +147,7 @@ public class GestorGruposCurso {
 
         return cursos;
     }
+
 
 
 

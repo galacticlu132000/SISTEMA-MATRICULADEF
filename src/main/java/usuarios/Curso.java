@@ -16,6 +16,7 @@ package usuarios;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
@@ -49,7 +50,7 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-public class Curso {
+public class Curso implements Serializable {
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          ATRIBUTOS                                 ║

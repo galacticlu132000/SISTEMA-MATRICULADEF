@@ -17,6 +17,7 @@ package usuarios;
 import seguridad.Encriptador;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+import java.io.Serializable;
 
 
 /**
@@ -51,7 +52,7 @@ import java.util.regex.Pattern;
  * @version 1.0
  * @since 1.0
  */
-public abstract class Usuario {
+public abstract class Usuario implements Serializable{
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          ATRIBUTOS PRIVADOS                        ║

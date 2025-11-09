@@ -1,7 +1,9 @@
 package evaluacion;
 import java.util.List;
+import java.io.Serializable;
 
-public class RespuestaPregunta {
+
+public class RespuestaPregunta  implements Serializable{
     private int numeroPregunta;
     private List<String> opcionesSeleccionadas;
     private int puntosObtenidos;

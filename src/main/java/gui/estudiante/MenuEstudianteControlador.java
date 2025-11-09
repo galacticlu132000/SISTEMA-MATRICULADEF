@@ -1,5 +1,6 @@
 package gui.estudiante;
 import control.GestorGruposCurso;
+import usuarios.Curso;
 import usuarios.Estudiante;
 import utilidades.correo.GestorCorreos;
 import utilidades.correo.RegistroCorreo;
@@ -74,7 +75,7 @@ public class MenuEstudianteControlador extends JFrame {
         }
 
         );
-        // Botón: Matricular curso
+        // Botón Matricular curso
         JButton botonMatricularCurso = new JButton("📘 Matricular Curso");
         botonMatricularCurso.setBackground(new Color(220, 255, 220));
         botonMatricularCurso.setForeground(new Color(30, 100, 60));
@@ -85,16 +86,16 @@ public class MenuEstudianteControlador extends JFrame {
             ventana.setVisible(true);
         });
 
-        // 📖 Botón: Ver cursos matriculados
+        // 📖 Botón Ver cursos matriculados
         JButton botonVerMatriculas = new JButton("📖 Ver cursos matriculados");
         botonVerMatriculas.setBackground(new Color(255, 245, 220));
         botonVerMatriculas.setForeground(new Color(100, 60, 20));
         botonVerMatriculas.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         botonVerMatriculas.setFocusPainted(false);
 
-// 🔹
+        //Botón Ver matriculas
         botonVerMatriculas.addActionListener(e -> {
-            List<String> cursosMatriculados = GestorGruposCurso.getInstancia()
+            List<Curso> cursosMatriculados = GestorGruposCurso.getInstancia()
                     .obtenerCursosMatriculados(estudianteActivo.getIdentificacionPersonal());
 
             JTextArea area = new JTextArea();
@@ -106,8 +107,8 @@ public class MenuEstudianteControlador extends JFrame {
             if (cursosMatriculados == null || cursosMatriculados.isEmpty()) {
                 area.setText("⚠️ No estás matriculado en ningún curso.");
             } else {
-                for (String curso : cursosMatriculados) {
-                    area.append("📘 " + curso + "\n");
+                for (Curso curso : cursosMatriculados) {
+                    area.append("📘 " + curso.getNombreCurso() + " (" + curso.getIdentificacionCurso() + ")\n");
                 }
             }
 
@@ -116,6 +117,18 @@ public class MenuEstudianteControlador extends JFrame {
 
             JOptionPane.showMessageDialog(null, scroll, "📖 Cursos matriculados", JOptionPane.PLAIN_MESSAGE);
         });
+        //Boton ver evaluaciones
+        JButton botonVerEvaluaciones = new JButton("📑 Ver evaluaciones asignadas");
+        botonVerEvaluaciones.setBackground(new Color(235, 255, 255));
+        botonVerEvaluaciones.setForeground(new Color(30, 80, 100));
+        botonVerEvaluaciones.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        botonVerEvaluaciones.setFocusPainted(false);
+        botonVerEvaluaciones.addActionListener(e -> {
+            VentanaEvaluaciones ventana = new VentanaEvaluaciones(estudianteActivo);
+            ventana.setVisible(true);
+        });
+
+
 
 
 
@@ -143,6 +156,7 @@ public class MenuEstudianteControlador extends JFrame {
         panelBoton.add(botonVerCorreos);
         panelBoton.add(botonMatricularCurso);
         panelBoton.add(botonVerMatriculas);
+        panelBoton.add(botonVerEvaluaciones);
         add(panelBoton, BorderLayout.SOUTH);
 
 

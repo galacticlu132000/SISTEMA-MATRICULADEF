@@ -92,7 +92,15 @@ public class AsignarEvaluacionGrupoControlador extends JFrame {
 
         try {
             LocalDateTime inicio = LocalDateTime.parse(fechaStr + "T" + horaStr);
-            boolean ok = GestorEvaluaciones.getInstancia().asociarEvaluacionAGrupo(evaluacion.getIdEvaluacion(), grupo, inicio);
+            LocalDateTime fin = inicio.plusMinutes(evaluacion.getDuracionMinutos()); // ✅ calcular fin
+
+            boolean ok = GestorEvaluaciones.getInstancia().asociarEvaluacionAGrupo(
+                    evaluacion.getIdEvaluacion(),
+                    grupo,
+                    inicio,
+                    fin
+            );
+
             if (ok) {
                 JOptionPane.showMessageDialog(this, "✅ Evaluación asignada correctamente.");
                 dispose();
@@ -103,6 +111,7 @@ public class AsignarEvaluacionGrupoControlador extends JFrame {
             mostrarAdvertencia("Formato de fecha/hora inválido. Usa YYYY-MM-DD y HH:mm.");
         }
     }
+
 
     private void mostrarAdvertencia(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);

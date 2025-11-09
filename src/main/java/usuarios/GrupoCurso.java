@@ -17,6 +17,8 @@ package usuarios;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
@@ -44,7 +46,7 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-public class GrupoCurso {
+public class GrupoCurso implements Serializable{
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                          ATRIBUTOS                                 ║
@@ -156,6 +158,22 @@ public class GrupoCurso {
         }
         return ids;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        GrupoCurso that = (GrupoCurso) obj;
+        return this.idGrupo == that.idGrupo &&
+                this.curso.getIdentificacionCurso().equals(that.curso.getIdentificacionCurso());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idGrupo, curso.getIdentificacionCurso());
+    }
+
+
+
 
 
 
@@ -174,3 +192,4 @@ public class GrupoCurso {
         return getNombre() + " (" + fechaInicio + " → " + fechaFin + ")";
     }
 }
+

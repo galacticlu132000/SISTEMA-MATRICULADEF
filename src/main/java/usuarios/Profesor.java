@@ -16,6 +16,7 @@ package usuarios;
 
 import seguridad.Encriptador;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗

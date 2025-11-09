@@ -2,12 +2,15 @@ package gui.estudiante;
 
 import control.GestorCursos;
 import control.GestorGruposCurso;
+//import control.GestorEvaluaciones;
+import evaluacion.Evaluacion;
 import usuarios.Curso;
 import usuarios.Estudiante;
 import usuarios.GrupoCurso;
-
+import evaluacion.GestorEvaluaciones;
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -69,6 +72,27 @@ public class VentanaMatricula extends JFrame {
                     .matricularEstudiante(idCurso, idGrupo, estudiante.getIdentificacionPersonal());
 
             if (exito) {
+                // ✅ Asignar el grupo al estudiante
+                GrupoCurso grupo = GestorGruposCurso.getInstancia().getGrupoPorId(idCurso, idGrupo);
+                estudiante.matricularEnGrupo(grupo);
+
+                // ✅ Mostrar evaluaciones asociadas al grupo
+                List<Evaluacion> evaluaciones = GestorEvaluaciones.getInstancia().getEvaluacionesPorGrupo(grupo);
+
+                if (evaluaciones.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "ℹ️ No hay evaluaciones registradas para este grupo.");
+                } else {
+                    StringBuilder mensaje = new StringBuilder("📋 Evaluaciones disponibles:\n\n");
+                    for (Evaluacion ev : evaluaciones) {
+                        mensaje.append("📝 ").append(ev.getNombre()).append("\n");
+                        mensaje.append("📘 Curso: ").append(grupo.getCurso() != null ? grupo.getCurso().getIdentificacionCurso() : "null").append("\n");
+                        mensaje.append("⏰ Inicio: ").append(ev.getInicio(grupo)).append("\n");
+                        mensaje.append("⏰ Fin: ").append(ev.getFin(grupo)).append("\n");
+                        mensaje.append("───────────────\n");
+                    }
+                    JOptionPane.showMessageDialog(this, mensaje.toString());
+                }
+
                 JOptionPane.showMessageDialog(this, "✅ Matrícula exitosa");
                 dispose();
             } else {
@@ -86,4 +110,5 @@ public class VentanaMatricula extends JFrame {
         add(panel);
     }
 }
+
 

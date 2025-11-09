@@ -10,10 +10,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.io.*;
 
-public class GestorEvaluaciones {
+public class GestorEvaluaciones implements Serializable {
     private static GestorEvaluaciones instancia;
     private final List<Evaluacion> evaluaciones = new ArrayList<>();
-    private final String rutaArchivo = "datos/matriculaycalificaciones/evaluaciones.dat";
+    private final String rutaArchivo = "datos/matri culaycalificaciones/evaluaciones.dat";
+    private final Map<GrupoCurso, List<Evaluacion>> mapaEvaluacionesPorGrupo = new HashMap<>();
+
 
     private GestorEvaluaciones() {
         cargarEvaluaciones();
@@ -58,8 +60,18 @@ public class GestorEvaluaciones {
     }
 
     private void guardarEvaluaciones() {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(rutaArchivo))) {
-            out.writeObject(evaluaciones);
+        try {
+            File archivo = new File(rutaArchivo);
+            File carpeta = archivo.getParentFile(); // obtiene la carpeta "datos/matriculaycalificaciones"
+
+            if (!carpeta.exists()) {
+                carpeta.mkdirs(); // ✅ crea la carpeta si no existe
+            }
+
+            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(archivo))) {
+                out.writeObject(evaluaciones);
+            }
+
         } catch (IOException e) {
             System.out.println("Error al guardar evaluaciones: " + e.getMessage());
         }
@@ -90,16 +102,27 @@ public class GestorEvaluaciones {
     }
 
 
-    public boolean asociarEvaluacionAGrupo(int idEvaluacion, GrupoCurso grupo, LocalDateTime inicio) {
+
+    public boolean asociarEvaluacionAGrupo(int idEvaluacion, GrupoCurso grupo, LocalDateTime inicio, LocalDateTime fin) {
         for (Evaluacion e : evaluaciones) {
             if (e.getIdEvaluacion() == idEvaluacion) {
-                e.asociarAGrupo(grupo, inicio);
+                e.asociarAGrupo(grupo, inicio, fin);
+
+                // ✅ Asociar en el mapa
+                mapaEvaluacionesPorGrupo.computeIfAbsent(grupo, k -> new ArrayList<>()).add(e);
+
                 guardarEvaluaciones();
                 return true;
             }
         }
         return false;
     }
+    public List<Evaluacion> getEvaluacionesPorGrupo(GrupoCurso grupo) {
+        return mapaEvaluacionesPorGrupo.getOrDefault(grupo, new ArrayList<>());
+    }
+
+
+
 
     public void registrarEvaluacion(Evaluacion evaluacion) {
         agregarEvaluacion(evaluacion);

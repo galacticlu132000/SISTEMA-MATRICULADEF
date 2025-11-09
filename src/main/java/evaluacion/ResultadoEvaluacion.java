@@ -2,8 +2,11 @@ package evaluacion;
 import usuarios.Estudiante;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.io.Serializable;
 
-public class ResultadoEvaluacion {
+
+
+public class ResultadoEvaluacion  implements Serializable{
     private Estudiante estudiante;
     private Evaluacion evaluacion;
     private LocalDateTime inicio;

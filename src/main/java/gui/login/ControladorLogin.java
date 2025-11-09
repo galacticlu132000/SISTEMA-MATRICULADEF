@@ -2,23 +2,26 @@ package gui.login;
 import control.GestorCursos;
 import control.GestorGruposCurso;
 import control.GestorProfesores;
-
-import evaluacion.Evaluacion;
 import evaluacion.GestorEvaluaciones;
-import evaluacion.Pregunta;
+import evaluacion.*;
 import usuarios.*;
 import control.GestorEstudiantes;
 import main.Main;
 import utilidades.correo.Correo;
 import utilidades.correo.GestorCorreos;
 
+
+
+import usuarios.Curso;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static seguridad.Encriptador.encriptar;
 import static usuarios.Curso.Modalidad.PRESENCIAL;
@@ -55,6 +58,9 @@ public class ControladorLogin extends JPanel {
     public ControladorLogin() {
         aplicarEstiloGlobal();
         inicializarComponentes();
+        registrarEvaluacionPareo();
+        registrarEvaluacionSeleccionUnica();
+
 
     }
 
@@ -154,6 +160,7 @@ public class ControladorLogin extends JPanel {
     GestorCursos gestorCursos = GestorCursos.getInstancia();
     GestorEvaluaciones gestorEvaluaciones = GestorEvaluaciones.getInstancia();
 
+
     // 🧑‍🎓 Estudiante
     Estudiante estudiantePrueba = new Estudiante(
             "Lucía", "González", "Ramírez", "lucia12345",
@@ -205,31 +212,146 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
     );
     boolean registradoExtra = gestorCursos.registrarCursos(cursoExtra);
 
-    // 👥 Grupo 1 del curso extra
+
     GrupoCurso grupo4 = new GrupoCurso(1, LocalDate.of(2025, 11, 4), LocalDate.of(2025, 12, 18), cursoExtra);
     String idCursoExtra = cursoExtra.getIdentificacionCurso();
     boolean grupo4Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo4);
     boolean grupo4Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo4);
 
-    // 👥 Grupo 2 del curso extra
+
     GrupoCurso grupo5 = new GrupoCurso(2, LocalDate.of(2025, 11, 5), LocalDate.of(2025, 12, 19), cursoExtra);
     boolean grupo5Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo5);
     boolean grupo5Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo5);
 
-    // 👥 Grupo 3 del curso extra
+
     GrupoCurso grupo6 = new GrupoCurso(3, LocalDate.of(2025, 11, 6), LocalDate.of(2025, 12, 20), cursoExtra);
     boolean grupo6Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo6);
     boolean grupo6Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo6);
 
-    // 👥 Grupo 4 del curso extra
+
     GrupoCurso grupo7 = new GrupoCurso(4, LocalDate.of(2025, 11, 7), LocalDate.of(2025, 12, 21), cursoExtra);
     boolean grupo7Registrado = gestorGrupos.agregarGrupo(idCursoExtra, grupo7);
     boolean grupo7Profesor = gestorProfesores.asociarGrupo(profesorPrueba, grupo7);
 
 
-    // 📝 Evaluación
-    List<String> objetivos = List.of("Aplicar principios de POO", "Diseñar clases con herencia");
-    List<Pregunta> preguntas = new ArrayList<>();
+    public void registrarEvaluacionSeleccionUnica() {
+        List<String> opciones = List.of(
+                "Ocultar detalles internos",
+                "Reutilización de código",
+                "Comportamiento dinámico",
+                "Separación entre interfaz y implementación"
+        );
+
+        PreguntaSeleccionUnica pregunta = new PreguntaSeleccionUnica(
+                1,
+                "¿Qué representa el principio de encapsulamiento en POO?",
+                5,
+                opciones,
+                "Ocultar detalles internos"
+        );
+
+        List<Pregunta> preguntas = new ArrayList<>();
+        preguntas.add(pregunta);
+
+        Evaluacion evaluacionSeleccionUnica = new Evaluacion(
+                "Evaluación de POO - Selección Única",
+                "Selecciona la opción correcta sobre principios de POO.",
+                List.of("Comprender encapsulamiento", "Aplicar principios básicos de diseño"),
+                15,
+                false,
+                false,
+                preguntas,
+                profesorPrueba // Asegúrate de que esté correctamente inicializado
+        );
+
+        // Validar si ya está registrada en el grupo
+        boolean yaRegistrada = GestorEvaluaciones.getInstancia()
+                .getEvaluacionesPorGrupo(grupoPrueba).stream()
+                .anyMatch(e -> e.getNombre().equals("Evaluación de POO - Selección Única"));
+
+        if (!yaRegistrada) {
+            GestorEvaluaciones.getInstancia().registrarEvaluacion(evaluacionSeleccionUnica);
+
+            LocalDateTime inicio = LocalDateTime.now();
+            LocalDateTime fin = inicio.plusDays(7);
+
+            GestorEvaluaciones.getInstancia().asociarEvaluacionAGrupo(
+                    evaluacionSeleccionUnica.getIdEvaluacion(),
+                    grupoPrueba,
+                    inicio,
+                    fin
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    // 📝 Evaluación Pareo
+
+    public void registrarEvaluacionPareo() {
+        List<String> objetivos = List.of(
+                "Relacionar conceptos clave de POO",
+                "Aplicar principios de encapsulamiento y herencia"
+        );
+
+        Map<String, String> pares = new HashMap<>();
+        pares.put("Encapsulamiento", "Ocultar detalles internos");
+        pares.put("Herencia", "Reutilización de código");
+        pares.put("Polimorfismo", "Comportamiento dinámico");
+        pares.put("Abstracción", "Separar interfaz de implementación");
+
+        List<String> izquierda = new ArrayList<>(pares.keySet());
+        List<String> derecha = new ArrayList<>(pares.values());
+
+        PreguntaPareo pregunta = new PreguntaPareo(
+                1,
+                "Relaciona cada concepto de POO con su descripción correspondiente.",
+                10,
+                izquierda,
+                derecha,
+                pares
+        );
+        List<Pregunta> preguntas = new ArrayList<>();
+        preguntas.add(pregunta);
+
+        Evaluacion evaluacionPareo = new Evaluacion(
+                "Evaluación de POO - Pareo",
+                "Relaciona los conceptos clave de POO.",
+                objetivos,
+                20,
+                false,
+                false,
+                preguntas,
+                profesorPrueba
+        );
+
+        // ✅ Validar si ya está registrada en ese grupo
+        boolean yaRegistrada = GestorEvaluaciones.getInstancia()
+                .getEvaluacionesPorGrupo(grupoPrueba).stream()
+                .anyMatch(e -> e.getNombre().equals("Evaluación de POO - Pareo"));
+
+        if (!yaRegistrada) {
+            GestorEvaluaciones.getInstancia().registrarEvaluacion(evaluacionPareo);
+
+            LocalDateTime inicio = LocalDateTime.of(2025, 11, 8, 8, 0);
+            LocalDateTime fin = LocalDateTime.of(2025, 12, 10, 23, 59);
+
+            GestorEvaluaciones.getInstancia().asociarEvaluacionAGrupo(
+                    evaluacionPareo.getIdEvaluacion(),
+                    grupoPrueba,
+                    inicio,
+                    fin
+            );
+        }
+    }
+
 
 
 
