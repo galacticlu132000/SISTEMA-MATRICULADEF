@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import static main.Main.abrirLogin;
+
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
  * ║ 🧑‍🏫 MenuProfesorControlador                                               ║
@@ -21,7 +23,7 @@ public class MenuProfesorControlador extends JFrame {
     private JTable tablaEvaluaciones;
     private DefaultTableModel modeloTabla;
     private JButton btnRegistrar, btnModificar, btnEliminar, btnDetalles,btnDetallesProfesor;
-    private JButton btnPrevisualizar, btnAsignarGrupo, btnReportes;
+    private JButton btnPrevisualizar, btnAsignarGrupo, btnReportes,btnCerrarSesion;
     private final Profesor profesorActual;
 
 
@@ -77,13 +79,14 @@ public class MenuProfesorControlador extends JFrame {
         btnAsignarGrupo = new JButton("📎 Asignar a Grupo");
         btnReportes = new JButton("📄 Reportes");
         btnDetallesProfesor = new JButton("👨‍🏫 Detalles del Profesor");
+        btnCerrarSesion = new JButton("🚪 Cerrar Sesión");
 
 
-        JPanel botones = new JPanel(new GridLayout(1, 7, 10, 0));
+        JPanel botones = new JPanel(new GridLayout(1, 8, 10, 0));
         botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         botones.setBackground(new Color(230, 250, 240));
 
-        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnPrevisualizar, btnAsignarGrupo, btnReportes,btnDetallesProfesor}) {
+        for (JButton btn : new JButton[]{btnRegistrar, btnModificar, btnEliminar, btnDetalles, btnPrevisualizar, btnAsignarGrupo, btnReportes, btnDetallesProfesor, btnCerrarSesion}) {
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(160, 200, 180)),
@@ -94,6 +97,7 @@ public class MenuProfesorControlador extends JFrame {
 
         add(botones, BorderLayout.SOUTH);
 
+// Listeners
         btnRegistrar.addActionListener(e -> abrirRegistro());
         btnModificar.addActionListener(e -> abrirModificacion());
         btnEliminar.addActionListener(e -> eliminarEvaluacion());
@@ -101,7 +105,8 @@ public class MenuProfesorControlador extends JFrame {
         btnPrevisualizar.addActionListener(e -> previsualizarEvaluacion());
         btnAsignarGrupo.addActionListener(e -> asignarEvaluacionAGrupo());
         btnReportes.addActionListener(e -> abrirReportes());
-        btnDetallesProfesor.addActionListener(e-> abrirDetallesProfesor());
+        btnDetallesProfesor.addActionListener(e -> abrirDetallesProfesor());
+        btnCerrarSesion.addActionListener(e -> cerrarSesion());
     }
 
     private JPanel crearEncabezado() {
@@ -216,4 +221,17 @@ public class MenuProfesorControlador extends JFrame {
     private void mostrarAdvertencia(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
     }
+
+    private void cerrarSesion() {
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que deseas cerrar sesión?",
+                "Cerrar Sesión",
+                JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            dispose(); // Cierra el panel actual
+            abrirLogin(); // 👈 vuelve al login
+        }
+    }
+
 }

@@ -1,11 +1,11 @@
-package gui.estudiante;
+package gui.evaluaciones;
 
 import evaluacion.Evaluacion;
 import evaluacion.Pregunta;
 import evaluacion.PreguntaPareo;
 import evaluacion.PreguntaSeleccionUnica;
+import gui.estudiante.PanelSeleccionUnica;
 import usuarios.Estudiante;
-import gui.estudiante.PanelPareoVisual;
 
 import javax.swing.*;
 import javax.swing.Timer;

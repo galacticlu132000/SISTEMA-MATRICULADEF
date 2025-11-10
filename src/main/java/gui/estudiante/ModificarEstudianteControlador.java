@@ -169,7 +169,7 @@ public class ModificarEstudianteControlador extends JDialog {
         boolean direccionValida = txtDireccion.getText().length() >= 5;
         aplicarEstiloCampo(txtDireccion, direccionValida, "Debe tener al menos 5 caracteres");
 
-        boolean organizacionValida = txtOrganizacion.getText().length() <= 40;
+        boolean organizacionValida =txtOrganizacion.getText().length() >=1&&txtOrganizacion.getText().length() <=40;
         aplicarEstiloCampo(txtOrganizacion, organizacionValida, "Máximo 40 caracteres");
 
         boolean temasValidos = Arrays.stream(txtTemas.getText().split("\\s*,\\s*"))

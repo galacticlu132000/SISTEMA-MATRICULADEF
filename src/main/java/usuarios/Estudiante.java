@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import usuarios.GrupoCurso;
+
+import static seguridad.Encriptador.encriptar;
+
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
  * ║                         CLASE CONCRETA: ESTUDIANTE                        ║
@@ -166,19 +169,21 @@ public class Estudiante extends Usuario {
      *
      * @param encriptada Contraseña temporal encriptada.
      */
+// Guarda la contraseña temporal encriptada
     public void setContrasenaTemporal(String encriptada) {
         this.contrasenaTemporal = encriptada;
     }
 
-    /**
-     * Verifica si la contraseña temporal ingresada coincide con la almacenada.
-     *
-     * @param ingresada Contraseña ingresada por el usuario.
-     * @return {@code true} si coincide, {@code false} en caso contrario.
-     */
+    // Devuelve la contraseña temporal encriptada (tal cual está almacenada)
+    public String getContrasenaTemporal() {
+        return contrasenaTemporal;
+    }
+
+    // Verifica si la contraseña ingresada en texto plano coincide con la temporal
     public boolean esContrasenaTemporalValida(String ingresada) {
         return Encriptador.verificar(ingresada, contrasenaTemporal);
     }
+
 
 
     // ╔════════════════════════════════════════════════════════════════════╗

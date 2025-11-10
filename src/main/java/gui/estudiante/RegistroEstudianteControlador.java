@@ -125,7 +125,7 @@ public class RegistroEstudianteControlador extends JDialog {
                         validarCampo(campoTelefono, 8, 20, "Mínimo 8 dígitos") &
                         validarCorreo() &
                         validarCampo(campoDireccion, 5, 60, "Entre 5 y 60 caracteres") &
-                        validarCampo(campoOrganizacion, 0, 40, "Máximo 40 caracteres") &
+                        validarCampo(campoOrganizacion, 1, 40, "Máximo 40 caracteres") &
                         validarTemas() &
                         validarContrasena();
 
@@ -168,6 +168,8 @@ public class RegistroEstudianteControlador extends JDialog {
         aplicarEstiloCampo(campoContrasena, valido, "Mínimo 8 caracteres, una mayúscula y un número");
         return valido;
     }
+
+
 
 
     private void aplicarEstiloCampo(JComponent campo, boolean valido, String tooltip) {

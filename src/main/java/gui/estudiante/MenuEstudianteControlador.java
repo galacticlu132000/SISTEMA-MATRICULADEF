@@ -1,5 +1,7 @@
 package gui.estudiante;
 import control.GestorGruposCurso;
+import gui.evaluaciones.VentanaEvaluaciones;
+import gui.login.ControladorLogin;
 import usuarios.Curso;
 import usuarios.Estudiante;
 import utilidades.correo.GestorCorreos;
@@ -7,181 +9,190 @@ import utilidades.correo.RegistroCorreo;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.*;
+
+import static main.Main.abrirLogin;
+
 
 /**
  * ╔════════════════════════════════════════════════════════════════════════════╗
  * ║ 🎓 MenuEstudianteControlador                                               ║
  * ║                                                                            ║
- * ║ Ventana Swing que muestra la información personal y académica del         ║
- * ║ estudiante activo.                                                         ║
+ * ║ Interfaz Swing para gestionar información del estudiante:                  ║
+ * ║ - Ver datos personales, correos, cursos y evaluaciones                     ║
  * ╚════════════════════════════════════════════════════════════════════════════╝
  */
 public class MenuEstudianteControlador extends JFrame {
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                      COMPONENTES UI                        ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private JLabel tituloBienvenida;
-    private JLabel labelNombre, labelID, labelCorreo, labelTelefono,
-            labelDireccion, labelOrganizacion, labelTemas;
+    private JTable tablaCursos;
+    private DefaultTableModel modeloTabla;
+    // Nuevo botón
+    private JButton btnCorreos, btnMatricular, btnVerCursos, btnEvaluaciones, btnDetalles, btnCerrarSesion;
 
-    private static Estudiante estudianteActivo;
+    private final Estudiante estudianteActivo;
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║                      CONSTRUCTOR                           ║
-    // ╚════════════════════════════════════════════════════════════╝
+
     public MenuEstudianteControlador(Estudiante estudiante) {
-        estudianteActivo = estudiante;
-        setTitle("🎓 Menú del Estudiante");
-        setSize(500, 400);
-        setLocationRelativeTo(null);
+        this.estudianteActivo = estudiante;
+        aplicarEstiloGlobal();
+        setTitle("🎓 Panel del Estudiante");
+        setSize(850, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         inicializarComponentes();
-        cargarDatosEstudiante();
+        cargarCursos(estudianteActivo);
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              INICIALIZACIÓN DE COMPONENTES                ║
-    // ╚════════════════════════════════════════════════════════════╝
+    private void aplicarEstiloGlobal() {
+        UIManager.put("Table.background", new Color(250, 240, 255));
+        UIManager.put("Table.foreground", new Color(60, 40, 80));
+        UIManager.put("Table.selectionBackground", new Color(210, 180, 240));
+        UIManager.put("Table.selectionForeground", Color.BLACK);
+        UIManager.put("Table.gridColor", new Color(200, 180, 220));
+        UIManager.put("Panel.background", new Color(240, 230, 250));
+        UIManager.put("Button.background", new Color(220, 200, 240));
+        UIManager.put("Button.foreground", new Color(60, 40, 80));
+        UIManager.put("Button.font", new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        UIManager.put("Table.font", new Font("Segoe UI Emoji", Font.PLAIN, 13));
+        UIManager.put("Label.font", new Font("Segoe UI Emoji", Font.BOLD, 16));
+    }
+
     private void inicializarComponentes() {
-        setLayout(new BorderLayout());
-        JPanel panel = new JPanel(new GridLayout(8, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
-        JButton botonVerCorreos = new JButton("📬 Ver correos recibidos");
-        botonVerCorreos.setBackground(new Color(220, 235, 255));
-        botonVerCorreos.setForeground(new Color(40, 70, 130));
-        botonVerCorreos.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        botonVerCorreos.setFocusPainted(false);
-        botonVerCorreos.addActionListener(e -> {
-            RegistroCorreo registro = GestorCorreos.obtenerRegistro(estudianteActivo.getCorreoElectronico());
-            java.util.List<String> historial = registro.obtenerHistorial();
+        add(crearEncabezado(), BorderLayout.NORTH);
 
-            JTextArea area = new JTextArea();
-            area.setEditable(false);
-            area.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            area.setBackground(new Color(255, 255, 255));
-            area.setForeground(new Color(50, 50, 50));
+        // 👇 Ajustado a solo dos columnas
+        modeloTabla = new DefaultTableModel(new String[]{"ID Curso", "Nombre"}, 0);
+        tablaCursos = new JTable(modeloTabla);
+        tablaCursos.setRowHeight(25);
+        tablaCursos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tablaCursos.getTableHeader().setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        tablaCursos.getTableHeader().setBackground(new Color(200, 170, 230));
+        tablaCursos.getTableHeader().setForeground(new Color(50, 30, 70));
 
-            for (String entrada : historial) {
-                area.append("═══════════════════════════════════════\n");
-                area.append(entrada + "\n");
-                area.append("═══════════════════════════════════════\n\n");
-            }
+        JScrollPane scroll = new JScrollPane(tablaCursos);
+        scroll.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        add(scroll, BorderLayout.CENTER);
 
-            JScrollPane scroll = new JScrollPane(area);
-            scroll.setPreferredSize(new Dimension(450, 300));
+        btnCorreos = new JButton("📬 Ver Correos");
+        btnMatricular = new JButton("📘 Matricular Curso");
+        btnVerCursos = new JButton("📖 Ver Cursos");
+        btnEvaluaciones = new JButton("📑 Evaluaciones");
+        btnDetalles = new JButton("👩‍🎓 Detalles Estudiante");
+        btnCerrarSesion = new JButton("🚪 Cerrar Sesión");
 
-            JOptionPane.showMessageDialog(null, scroll, "📬 Historial de correos", JOptionPane.PLAIN_MESSAGE);
+
+        JPanel botones = new JPanel(new GridLayout(1, 6, 10, 0));
+        botones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        botones.setBackground(new Color(240, 230, 250));
+
+        for (JButton btn : new JButton[]{btnCorreos, btnMatricular, btnVerCursos, btnEvaluaciones, btnDetalles, btnCerrarSesion}) {
+            btn.setFocusPainted(false);
+            btn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(160, 140, 200)),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
+            botones.add(btn);
         }
 
-        );
-        // Botón Matricular curso
-        JButton botonMatricularCurso = new JButton("📘 Matricular Curso");
-        botonMatricularCurso.setBackground(new Color(220, 255, 220));
-        botonMatricularCurso.setForeground(new Color(30, 100, 60));
-        botonMatricularCurso.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        botonMatricularCurso.setFocusPainted(false);
-        botonMatricularCurso.addActionListener(e -> {
-            VentanaMatricula ventana = new VentanaMatricula(estudianteActivo);
-            ventana.setVisible(true);
-        });
+        add(botones, BorderLayout.SOUTH);
 
-        // 📖 Botón Ver cursos matriculados
-        JButton botonVerMatriculas = new JButton("📖 Ver cursos matriculados");
-        botonVerMatriculas.setBackground(new Color(255, 245, 220));
-        botonVerMatriculas.setForeground(new Color(100, 60, 20));
-        botonVerMatriculas.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        botonVerMatriculas.setFocusPainted(false);
-
-        //Botón Ver matriculas
-        botonVerMatriculas.addActionListener(e -> {
-            List<Curso> cursosMatriculados = GestorGruposCurso.getInstancia()
-                    .obtenerCursosMatriculados(estudianteActivo.getIdentificacionPersonal());
-
-            JTextArea area = new JTextArea();
-            area.setEditable(false);
-            area.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            area.setBackground(new Color(255, 255, 255));
-            area.setForeground(new Color(50, 50, 50));
-
-            if (cursosMatriculados == null || cursosMatriculados.isEmpty()) {
-                area.setText("⚠️ No estás matriculado en ningún curso.");
-            } else {
-                for (Curso curso : cursosMatriculados) {
-                    area.append("📘 " + curso.getNombreCurso() + " (" + curso.getIdentificacionCurso() + ")\n");
-                }
-            }
-
-            JScrollPane scroll = new JScrollPane(area);
-            scroll.setPreferredSize(new Dimension(450, 250));
-
-            JOptionPane.showMessageDialog(null, scroll, "📖 Cursos matriculados", JOptionPane.PLAIN_MESSAGE);
-        });
-        //Boton ver evaluaciones
-        JButton botonVerEvaluaciones = new JButton("📑 Ver evaluaciones asignadas");
-        botonVerEvaluaciones.setBackground(new Color(235, 255, 255));
-        botonVerEvaluaciones.setForeground(new Color(30, 80, 100));
-        botonVerEvaluaciones.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
-        botonVerEvaluaciones.setFocusPainted(false);
-        botonVerEvaluaciones.addActionListener(e -> {
-            VentanaEvaluaciones ventana = new VentanaEvaluaciones(estudianteActivo);
-            ventana.setVisible(true);
-        });
-
-
-
-
-
-        tituloBienvenida   = new JLabel();
-        labelNombre        = new JLabel();
-        labelID            = new JLabel();
-        labelCorreo        = new JLabel();
-        labelTelefono      = new JLabel();
-        labelDireccion     = new JLabel();
-        labelOrganizacion  = new JLabel();
-        labelTemas         = new JLabel();
-
-        panel.add(new JLabel("👋 Bienvenida:"));       panel.add(tituloBienvenida);
-        panel.add(new JLabel("👤 Nombre completo:"));  panel.add(labelNombre);
-        panel.add(new JLabel("🆔 Identificación:"));   panel.add(labelID);
-        panel.add(new JLabel("📧 Correo electrónico:")); panel.add(labelCorreo);
-        panel.add(new JLabel("📞 Teléfono:"));         panel.add(labelTelefono);
-        panel.add(new JLabel("🏠 Dirección:"));        panel.add(labelDireccion);
-        panel.add(new JLabel("🏢 Organización:"));     panel.add(labelOrganizacion);
-        panel.add(new JLabel("📚 Temas de interés:")); panel.add(labelTemas);
-
-        add(panel, BorderLayout.CENTER);
-        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        panelBoton.setBackground(new Color(240, 240, 255));
-        panelBoton.add(botonVerCorreos);
-        panelBoton.add(botonMatricularCurso);
-        panelBoton.add(botonVerMatriculas);
-        panelBoton.add(botonVerEvaluaciones);
-        add(panelBoton, BorderLayout.SOUTH);
-
-
+        btnCorreos.addActionListener(e -> verCorreos());
+        btnMatricular.addActionListener(e -> abrirMatricula());
+        btnVerCursos.addActionListener(e -> verCursos());
+        btnEvaluaciones.addActionListener(e -> abrirEvaluaciones());
+        btnDetalles.addActionListener(e -> abrirDetallesEstudiante());
+        btnCerrarSesion.addActionListener(e -> cerrarSesion());
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              CARGAR DATOS DEL ESTUDIANTE                  ║
-    // ╚════════════════════════════════════════════════════════════╝
-    private void cargarDatosEstudiante() {
-        if (estudianteActivo != null) {
-            tituloBienvenida.setText("👩‍🎓 Bienvenida, " + estudianteActivo.getNombre());
-            labelNombre.setText(estudianteActivo.getNombreCompleto());
-            labelID.setText(estudianteActivo.getIdentificacionPersonal());
-            labelCorreo.setText(estudianteActivo.getCorreoElectronico());
-            labelTelefono.setText(estudianteActivo.getNumeroTelefono());
-            labelDireccion.setText(estudianteActivo.getDireccionFisica());
-            labelOrganizacion.setText(estudianteActivo.getOrganizacionLaboral());
-            labelTemas.setText(String.join(", ", estudianteActivo.getTemasInteres()));
+    private JPanel crearEncabezado() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(120, 90, 160));
+
+        JLabel titulo = new JLabel("🎓 Panel del Estudiante", JLabel.LEFT);
+        titulo.setForeground(Color.WHITE);
+        titulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 18));
+
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        izquierda.setOpaque(false);
+        izquierda.add(titulo);
+
+        header.add(izquierda, BorderLayout.WEST);
+        header.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        return header;
+    }
+
+    private void cargarCursos(Estudiante estudiante) {
+        modeloTabla.setRowCount(0);
+        List<Curso> cursos = GestorGruposCurso.getInstancia()
+                .obtenerCursosMatriculados(estudiante.getIdentificacionPersonal());
+
+        if (cursos != null && !cursos.isEmpty()) {
+            for (Curso c : cursos) {
+                modeloTabla.addRow(new Object[]{
+                        c.getIdentificacionCurso(),
+                        c.getNombreCurso()
+                });
+            }
+        } else {
+            modeloTabla.addRow(new Object[]{"⚠️", "No hay cursos matriculados"});
         }
     }
 
-    // ╔════════════════════════════════════════════════════════════╗
-    // ║              MÉTODO PARA USO EXTERNO (OPCIONAL)           ║
-    // ╚════════════════════════════════════════════════════════════╝
-    public static void setEstudianteActivo(Estudiante estudiante) {
-        estudianteActivo = estudiante;
+    private void verCorreos() {
+        RegistroCorreo registro = GestorCorreos.obtenerRegistro(estudianteActivo.getCorreoElectronico());
+        java.util.List<String> historial = registro.obtenerHistorial();
+
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        for (String entrada : historial) {
+            area.append("═══════════════════════════════════════\n");
+            area.append(entrada + "\n");
+            area.append("═══════════════════════════════════════\n\n");
+        }
+
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(450, 300));
+        JOptionPane.showMessageDialog(this, scroll, "📬 Historial de correos", JOptionPane.PLAIN_MESSAGE);
     }
+
+    private void abrirMatricula() {
+        VentanaMatricula ventana = new VentanaMatricula(estudianteActivo);
+        ventana.setVisible(true);
+        cargarCursos(estudianteActivo); // 👈 refresca después de matricular
+    }
+
+    private void verCursos() {
+        cargarCursos(estudianteActivo);
+    }
+
+    private void abrirEvaluaciones() {
+        VentanaEvaluaciones ventana = new VentanaEvaluaciones(estudianteActivo);
+        ventana.setVisible(true);
+    }
+
+    private void abrirDetallesEstudiante() {
+        JOptionPane.showMessageDialog(this,
+                "👩‍🎓 " + estudianteActivo.getNombreCompleto() +
+                        "\n🆔 " + estudianteActivo.getIdentificacionPersonal() +
+                        "\n📧 " + estudianteActivo.getCorreoElectronico(),
+                "Detalles del Estudiante",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void cerrarSesion() {
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que deseas cerrar sesión?",
+                "Cerrar Sesión",
+                JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            dispose(); // Cierra el panel actual
+            abrirLogin(); // 👈 vuelve al login
+        }
+    }
+
 }

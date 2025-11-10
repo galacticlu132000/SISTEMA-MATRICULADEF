@@ -1,6 +1,8 @@
 package control;
 
 import usuarios.Estudiante;
+import usuarios.Profesor;
+
 import java.util.*;
 
 /**
@@ -109,6 +111,7 @@ public class GestorEstudiantes {
     public boolean existeCorreo(String correo) {
         return estudiantes.stream().anyMatch(e -> e.getCorreoElectronico().equalsIgnoreCase(correo));
     }
+
 
 
 }

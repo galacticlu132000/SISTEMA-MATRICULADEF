@@ -1,10 +1,12 @@
 package control;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import usuarios.Curso;
 import usuarios.Estudiante;
 import usuarios.GrupoCurso;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -14,7 +16,16 @@ public class Generadorpdf {
     public Generadorpdf() {
         documento = new com.itextpdf.text.Document();
         try {
-            PdfWriter.getInstance(documento, new FileOutputStream("ReporteEstudiantesMatriculados.pdf"));
+            // Crear carpeta si no existe
+            File carpeta = new File("datos/matriculaycalificaciones");
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();
+            }
+
+            // Archivo fijo estudiantes.pdf
+            File archivo = new File(carpeta, "estudiantes.pdf");
+
+            PdfWriter.getInstance(documento, new FileOutputStream(archivo));
             documento.open();
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,8 +67,8 @@ public class Generadorpdf {
         }
     }
 
-    public void generarArchivo(String nombreArchivo) {
+    public void generarArchivo() {
         documento.close();
-        System.out.println("PDF generado: " + nombreArchivo);
+        System.out.println("✅ PDF generado en carpeta datos/matriculaycalificaciones con nombre estudiantes.pdf");
     }
 }

@@ -1,4 +1,4 @@
-package gui.estudiante;
+package gui.evaluaciones;
 
 import evaluacion.PreguntaPareo;
 

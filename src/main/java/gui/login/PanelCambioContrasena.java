@@ -6,6 +6,9 @@ import usuarios.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static main.Main.abrirMenuEstudiante;
+import static main.Main.abrirMenuProfesor;
 import static seguridad.Encriptador.encriptar;
 
 public class PanelCambioContrasena extends JFrame {
@@ -43,16 +46,14 @@ public class PanelCambioContrasena extends JFrame {
 
             if (usuario instanceof usuarios.Estudiante estudiante) {
                 estudiante.setContrasenaEncriptada(nuevaEncriptada);
-                estudiante.setContrasenaEncriptada(null);
                 mensaje.setText("✅ Contraseña actualizada correctamente.");
                 dispose();
-                new MenuEstudianteControlador(estudiante).setVisible(true);
+                abrirMenuEstudiante(estudiante);
             } else if (usuario instanceof usuarios.Profesor profesor) {
                 profesor.setContrasenaEncriptada(nuevaEncriptada);
-                profesor.setContrasenaEncriptada(null);
                 mensaje.setText("✅ Contraseña actualizada correctamente.");
                 dispose();
-                new MenuProfesorControlador(profesor).setVisible(true);
+                abrirMenuProfesor(profesor);
             } else {
                 mensaje.setText("❌ Tipo de usuario no reconocido.");
             }

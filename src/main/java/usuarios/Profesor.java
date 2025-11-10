@@ -144,6 +144,7 @@ public class Profesor extends Usuario {
     public ArrayList<String> getTitulos() { return titulosObtenidos; }
     public ArrayList<String> getCertificaciones() { return certificacionesEstudio; }
     public ArrayList<GrupoCurso> getGruposAsignados() { return new ArrayList<>(gruposAsignados); }
+    public String getContrasenaTemporal() { return contrasenaTemporal; }
 
     // ╔════════════════════════════════════════════════════════════════════╗
     // ║                            SETTERS                                ║

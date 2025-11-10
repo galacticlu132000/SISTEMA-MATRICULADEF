@@ -4,6 +4,7 @@ import control.GestorGruposCurso;
 import control.GestorProfesores;
 import evaluacion.GestorEvaluaciones;
 import evaluacion.*;
+import seguridad.Encriptador;
 import usuarios.*;
 import control.GestorEstudiantes;
 import main.Main;
@@ -378,20 +379,25 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
                     mensaje = "❌ Credenciales de administrador incorrectas.";
                 }
 
-            } else if (id.equals(estudiantePrueba.getIdentificacionPersonal()) &&
-                    encriptar(clave).equals(estudiantePrueba.getContrasenaEncriptada())) {
+            } else if (tipo.equals("Estudiante")) {
 
                 Estudiante estudiante = gestor.consultarEstudiante(id);
                 if (estudiante != null) {
-                    String claveEncriptada = encriptar(clave);
 
-                    if (claveEncriptada.equals(estudiante.getContrasenaEncriptada())) {
+                    // Primero validar si la contraseña temporal coincide (texto plano con encriptada)
+                    if (estudiante.getContrasenaTemporal() != null &&
+                            Encriptador.verificar(clave, estudiante.getContrasenaTemporal())) {
+
                         mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
+                        // Limpiar la contraseña temporal para que no se use de nuevo
+                        estudiante.setContrasenaTemporal(null);
+                        gestor.actualizarEstudiante(estudiante);
                         SwingUtilities.getWindowAncestor(this).dispose();
                         abrirPanelCambioContrasena(estudiante);
                         return;
                     }
 
+                    // Si no es contraseña temporal, validar la contraseña normal
                     if (estudiante.verificarCredenciales(id, clave).contains("exitosa")) {
                         mensaje = "✅ Bienvenido, " + estudiante.getNombre();
                         SwingUtilities.getWindowAncestor(this).dispose();
@@ -399,15 +405,22 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
                     } else {
                         mensaje = "❌ Credenciales de estudiante incorrectas.";
                     }
+                } else {
+                    mensaje = "❌ Usuario no encontrado.";
                 }
 
-            } else {
+
+            } else if (tipo.equals("Profesor")) {
+
                 Profesor profesor = gestor2.consultarProfesor(id);
                 if (profesor != null) {
-                    String claveEncriptada = encriptar(clave);
 
-                    if (claveEncriptada.equals(profesor.getContrasenaEncriptada())) {
+                    if (profesor.getContrasenaTemporal() != null &&
+                            Encriptador.verificar(clave, profesor.getContrasenaTemporal())) {
+
                         mostrarMensaje("🔐 Has ingresado con una contraseña temporal.\nDebes establecer una nueva contraseña.");
+                        profesor.setContrasenaTemporal(null);
+                        gestor2.actualizarProfesor(profesor);
                         SwingUtilities.getWindowAncestor(this).dispose();
                         abrirPanelCambioContrasena(profesor);
                         return;
@@ -416,13 +429,16 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
                     if (profesor.verificarCredenciales(id, clave).contains("exitosa")) {
                         mensaje = "✅ Bienvenido, " + profesor.getNombre();
                         SwingUtilities.getWindowAncestor(this).dispose();
-                        Main.abrirMenuProfesor(profesor); // Asegúrate de tener este método
+                        Main.abrirMenuProfesor(profesor);
                     } else {
                         mensaje = "❌ Credenciales de profesor incorrectas.";
                     }
                 } else {
                     mensaje = "❌ Usuario no encontrado.";
                 }
+
+            } else {
+                mensaje = "❌ Tipo de usuario no válido.";
             }
 
             mostrarMensaje(mensaje);
@@ -442,7 +458,9 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
         }
 
         Estudiante estudiante = gestor.consultarEstudiante(id.trim());
-        if (estudiante == null) {
+        Profesor profesor = gestor2.consultarProfesor(id.trim()); // 👈 nuevo
+
+        if (estudiante == null && profesor == null) {
             mostrarMensaje("❌ No se encontró ningún usuario con esa identificación.");
             return;
         }
@@ -450,16 +468,28 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
         try {
             String temporal = generarContrasenaTemporal();
             String encriptada = encriptar(temporal);
-            estudiante.setContrasenaTemporal(encriptada); // método que debes agregar en Estudiante
-            gestor.actualizarEstudiante(estudiante); // guarda el cambio
 
-            GestorCorreos.enviarYRegistrar(
-                    estudiante.getCorreoElectronico(),
-                    "Recuperación de contraseña",
-                    "Hola " + estudiante.getNombre() + ",\n\nTu contraseña temporal es:\n\n" +
-                            temporal + "\n\nÚsala una vez para ingresar y establecer una nueva contraseña."
-            );
+            if (estudiante != null) {
+                estudiante.setContrasenaTemporal(encriptada);
+                gestor.actualizarEstudiante(estudiante);
 
+                GestorCorreos.enviarYRegistrar(
+                        estudiante.getCorreoElectronico(),
+                        "Recuperación de contraseña",
+                        "Hola " + estudiante.getNombre() + ",\n\nTu contraseña temporal es:\n\n" +
+                                temporal + "\n\nÚsala una vez para ingresar y establecer una nueva contraseña."
+                );
+            } else if (profesor != null) {
+                profesor.setContrasenaTemporal(encriptada);
+                gestor2.actualizarProfesor(profesor);
+
+                GestorCorreos.enviarYRegistrar(
+                        profesor.getCorreoElectronico(),
+                        "Recuperación de contraseña",
+                        "Hola " + profesor.getNombre() + ",\n\nTu contraseña temporal es:\n\n" +
+                                temporal + "\n\nÚsala una vez para ingresar y establecer una nueva contraseña."
+                );
+            }
 
             mostrarMensaje("📩 Se ha enviado una contraseña temporal a tu correo.");
         } catch (Exception ex) {
@@ -467,6 +497,7 @@ boolean registrado2=gestorProfesores.registrarProfesor(profesorPrueba);
             mostrarMensaje("❌ Error al generar o enviar la contraseña.");
         }
     }
+
 
     private String generarContrasenaTemporal() {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#%&!";

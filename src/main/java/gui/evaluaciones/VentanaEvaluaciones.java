@@ -1,17 +1,15 @@
-package gui.estudiante;
+package gui.evaluaciones;
 
 import usuarios.Curso;
 import usuarios.Estudiante;
 import evaluacion.Evaluacion;
 import control.GestorGruposCurso;
 
-import evaluacion.Evaluacion;
 import usuarios.GrupoCurso;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import evaluacion.GestorEvaluaciones;

@@ -209,7 +209,7 @@ public class ReportesAdministradorControlador extends JFrame {
             return;
         }
 
-        pdf.generarArchivo("ReporteEstudiantesMatriculados.pdf");
+        pdf.generarArchivo();
         JOptionPane.showMessageDialog(this, "✅ Reporte generado exitosamente.");
     }
 
